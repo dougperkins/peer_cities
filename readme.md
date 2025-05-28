@@ -13,6 +13,26 @@
 
 - **`src/`**  
   Holds the main source code for the project.
+  
+  - top_level.R
+  
+  - constants.R
+  
+  - utils.R
+  
+  - acs.R
+  
+  - validate.R
+  
+  - preprocess.R
+  
+  - dim_red.R
+  
+  - cluster.R
+  
+  - eval.R
+  
+  - app.py
 
 - **`data/`**
   
@@ -55,12 +75,15 @@
   - Previously-similar peers
   
   - Non-peer extreme examples
+  
+  - Most similar in state
+  
+  - Most similar per state
+  
+  - Most similar per county
 
 - New City Lists
   
   - Expanded US cities
   
   - Global cities
-    
-    
-    
