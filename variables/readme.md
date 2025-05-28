@@ -58,6 +58,12 @@ Homeownership rate
 
 - B25003_002E – Owner occupied
 
+Homelessness rates
+
+Age of city
+
+Proximity to major metro city
+
 
 
 # Resilience
