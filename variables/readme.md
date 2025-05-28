@@ -44,6 +44,8 @@ vacancy rate (dropped in 2023)
 
 - B25034_011E – Built 1939 or earlier
 
+gross rent as % of income (B25070)
+
 housing units per square mile (B25001)
 
 share of metropolitan area population (B01003, assembled table of cities & metro areas)
@@ -69,3 +71,12 @@ Proximity to major metro city
 # Resilience
 
 Variables listed on the PCIT site, ACS variables listed in Peer Cities Tool Documentation document.
+
+
+# Other
+
+Poverty
+
+- B06012 - Place of Birth by Poverty Status in the Past 12 Months
+
+- B17010 - Poverty Status in the Past 12 Months of Families by Family Type by Presence of Related Children by Age of Related Children
