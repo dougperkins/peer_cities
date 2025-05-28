@@ -11,7 +11,28 @@ ma_prepped <- ma %>%
 set.seed(123) # for reproducibility
 k <- 3 # choose the number of clusters
 
-kmeans_result <- kmeans(ma_prepped, centers = k, nstart = 25)
+kmeans_result <- map(1:10, function(k) {
+    k_means_model <- kmeans(df_scaled, centers = k, nstart = 25)
+    list(k = k, wss = k_means_model$tot.withinss, model = k_means_model)
+})
+
+# Convert to a tibble
+elbow_df <- tibble(
+    k = map_int(kmeans_result, "k"),
+    wss = map_dbl(kmeans_result, "wss"),
+    model = map(kmeans_result, "model")
+)
+
+# Step 4: Plot elbow curve
+ggplot(elbow_df, aes(x = k, y = wss)) +
+    geom_line() +
+    geom_point() +
+    labs(
+        title = "Elbow Method for Optimal k",
+        x = "Number of Clusters (k)",
+        y = "Total Within-Cluster Sum of Squares"
+    ) +
+    theme_minimal()
 
 # View cluster assignments
 print(kmeans_result$cluster)
