@@ -76,3 +76,13 @@ capitalize_after_underscore <- function(x) {
     paste0("_", toupper(sub("_", "", m)))
   })
 }
+
+# TODO
+# get_city_subset <- function(city_list){
+#   
+# }
+
+# TODO
+# get_city_subset_by_params <- function(p1, p2, p3){
+#   
+# }

@@ -1,0 +1,543 @@
+﻿Item Code,Description
+A01,Charges - Air Transportation
+A03,Charges - Miscellaneous Commercial Activities
+A09,Charges - Elementary & Secondary Education School Lunch
+A10,Charges - Elementary & Secondary Education School Tuition
+A12,"Charges - Elementary & Secondary Education, Other"
+A16,Charges - Higher Education Auxiliary Enterprises
+A18,"Charges - Higher Education, Other"
+A21,"Charges - Education - Other, NEC"
+A36,Charges - Public Hospital
+A44,Charges - Regular Highways
+A45,Charges - Toll Highways
+A50,Charges - Housing & Community Development
+A54,"Charges - Natural Resources, Agriculture (Not used in 2005-2006)"
+A56,"Charges - Natural Resources, Forestry"
+A59,"Charges - Natural Resources, Other"
+A60,Charges - Parking Facilities (NEW for 2005)
+A61,Charges - Parks & Recreation
+A80,Charges - Sewerage
+A81,Charges - Solid Waste Management
+A87,Charges - Sea and Inland Port Facilities
+A89,Charges - All Other
+A90,Revenue - Liquor Stores
+A91,Revenue - Water Utilities
+A92,Revenue - Electric Utilities
+A93,Revenue - Gas Utilities
+A94,Revenue - Transit Utilities
+B01,Intergovernmental Revenue from Federal - Air Transportation
+B21,Intergovernmental Revenue from Federal - Education
+B22,Intergovernmental Revenue from Federal- Employment Security Administration
+B30,Intergovernmental Revenue from Federal - General Support
+B42,Intergovernmental Revenue from Federal - Health & Hospitals
+B43,Intergovernmental Revenue from Federal - Environmental Health (NEW for 2007)
+B46,Intergovernmental Revenue from Federal - Highways
+B50,Intergovernmental Revenue from Federal - Housing & Community Development
+B54,"Intergovernmental Revenue from Federal - Natural Resources, Agriculture (Not used in 2005-2006)"
+B59,Intergovernmental Revenue from Federal - Other Natural Resources
+B79,Intergovernmental Revenue from Federal - Public Welfare
+B80,Intergovernmental Revenue from Federal - Sewerage
+B89,Intergovernmental Revenue from Federal - All Other
+B91,"DISCONTINUED as of 2022, see B89 (Formerly: Intergovernmental Revenue from Federal - Water Utilities)"
+B92,"DISCONTINUED as of 2022, see B89 (Formerly: Intergovernmental Revenue from Federal - Electric Utilities)"
+B93,"DISCONTINUED as of 2022, see B89 (Formerly: Intergovernmental Revenue from Federal - Gas Utilities)"
+B94,"DISCONTINUED as of 2022, see B89 (Formerly: Intergovernmental Revenue from Federal - Transit Utilities)"
+D21,Intergovernmental Revenue from Local - Education
+D30,Intergovernmental Revenue from Local - General Support
+D42,Intergovernmental Revenue from Local - Health & Hospitals
+D46,Intergovernmental Revenue from Local - Highways
+D50,Intergovernmental Revenue from Local - Housing and Community Development (NEW in 2007)
+D79,Intergovernmental Revenue from Local - Public Welfare
+D80,Intergovernmental Revenue from Local - Sewerage
+D89,Intergovernmental Revenue from Local - All Other
+D91,"DISCONTINUED as of 2022, see D89 (Formerly: Intergovernmental Revenue from Local - Water Utilities)"
+D92,"DISCONTINUED as of 2022, see D89 (Formerly: Intergovernmental Revenue from Local - Electric Utilities)"
+D93,"DISCONTINUED as of 2022, see D89 (Formerly: Intergovernmental Revenue from Local - Gas Utilities)"
+D94,"DISCONTINUED as of 2022, see D89 (Formerly: Intergovernmental Revenue from Local - Transit Utilities)"
+E01,Current Operations - Air Transportation
+E03,"Current Operations - Miscellaneous Commercial Activities, NEC"
+E04,Current Operations - Correctional Institutions
+E05,"Current Operations - Corrections, Other"
+E12,Current Operations - Elementary & Secondary Education
+E16,Current Operations - Higher Education Auxiliary Enterprises
+E18,Current Operations - Other Higher Education
+E19,"DISCONTINUED as of 2005, see J19 (Formerly: Current Operations - Educational Scholarships, Assistance, & Subsidies)"
+E21,Current Operations - Other Education
+E22,Current Operations - Social Insurance Administration
+E23,Current Operations - Financial Administration
+E25,Current Operations - Judicial and Legal Services
+E26,Current Operations - Legislative Services
+E27,Current Operations - Environmental Health (NEW for 2007)
+E29,Current Operations - Central Staff Services
+E31,Current Operations - General Public Buildings
+E32,"Current Operations - Health Services, Other"
+E36,Current Operations - Own Hospitals
+E38,DISCONTINUED as of 2005 (Formerly: Current Operations - Other Hospitals)
+E44,Current Operations - Regular Highways
+E45,Current Operations - Toll Highways
+E47,DISCONTINUED as of 2005 (Formerly: Current Operations - Private Transit Subsidies)
+E50,Current Operations - Housing & Community Development
+E52,Current Operations - Libraries
+E54,"Current Operations - Natural Resources, Agriculture, Other (Not used in 2005-2006)"
+E55,"Current Operations - Natural Resources, Fish & Game"
+E56,"Current Operations - Natural Resources, Forestry"
+E59,"Current Operations - Natural Resources, Other"
+E60,Current Operations - Parking Facilities (NEW for 2005)
+E61,Current Operations - Parks & Recreation
+E62,Current Operations - Police Protection
+E66,"Current Operations - Protective Inspection and Regulation, NEC"
+E67,"DISCONTINUED as of 2005; see J67 (Formerly: Current Operations - Welfare, Federal Categorical Assistance Programs)"
+E68,"DISCONTINUED as of 2005; see J68 (Formerly: Current Operations - Welfare, Cash Assistance, Other)"
+E73,"DISCONTINUED as of 2012; Current Operations - Welfare, Payments to Medicare Trust Fund (previously S74)"
+E74,"DISCONTINUED as of 2022, see E79 (Formerly: Current Operations - Welfare, Vendor Payments for Medical Care)"
+E75,"DISCONTINUED as of 2022, see E79 (Formerly: Current Operations - Welfare, Vendor Payments for Other Purposes)"
+E77,Current Operations - Welfare Institutions
+E79,"Current Operations - Welfare, Other"
+E80,Current Operations - Sewerage
+E81,Current Operations - Solid Waste Management
+E84,DISCONTINUED as of 2005 (Formerly: Current Operations - Veterans` Bonuses) - See J85
+E85,Current Operations - Other Veterans Services
+E87,Current Operations - Sea and Inland Port Facilities
+E89,"Current Operations - General, Other"
+E90,Current Operations - Liquor Stores
+E91,Current Operations - Water Utilities
+E92,Current Operations - Electric Utilities
+E93,Current Operations - Gas Utilities
+E94,Current Operations - Transit Utilities
+F01,"Capital Expenditures - Air Transportation (EFFECTIVE 2022)
+(Formerly: Construction - Air Transportation; now includes all Capital Expenditures)"
+F03,"Capital Expenditures - Miscellaneous Commercial Activities, NEC (EFFECTIVE 2022)
+(Formerly: Construction - Miscellaneous Commercial Activities, NEC; now includes all Capital Expenditures)"
+F04,"Capital Expenditures - Correctional Institutions (EFFECTIVE 2022)
+(Formerly: Construction - Correctional Institutions; now includes all Capital Expenditures)"
+F05,"Capital Expenditures - Corrections (EFFECTIVE 2022)
+(Formerly: Construction - Corrections, Other; now includes all Capital Expenditures)"
+F12,"Capital Expenditures - Elementary & Secondary Education (EFFECTIVE 2022)
+(Formerly: Construction - Elementary & Secondary Education; now includes all Capital Expenditures)"
+F16,"Capital Expenditures - Higher Education, Auxiliary Enterprises (EFFECTIVE 2022)
+(Formerly: Construction - Higher Education, Auxiliary Enterprises; now includes all Capital Expenditures)"
+F18,"Capital Expenditures - Higher Education, Other (EFFECTIVE 2022)
+(Formerly: Construction - Higher Education, Other; now includes all Capital Expenditures)"
+F21,"Capital Expenditures - Education, Other (EFFECTIVE 2022)
+(Formerly: Construction - Education, Other; now includes all Capital Expenditures)"
+F22,"Capital Expenditures - Social Insurance Administration (EFFECTIVE 2022)
+(Formerly: Construction - Social Insurance Administration; now includes all Capital Expenditures)"
+F23,"Capital Expenditures - Financial Administration (EFFECTIVE 2022)
+(Formerly: Construction - Financial Administration; now includes all Capital Expenditures)"
+F25,"Capital Expenditures - Judicial & Legal (EFFECTIVE 2022)
+(Formerly: Construction - Judicial & Legal; now includes all Capital Expenditures)"
+F26,"Capital Expenditures - Legislative (EFFECTIVE 2022)
+(Formerly: Construction - Legislative; now includes all Capital Expenditures)"
+F27,"Capital Expenditures - Environmental Health (EFFECTIVE 2022)
+(Formerly: Construction - Environmental Health (NEW for 2007); now includes all Capital Expenditures)"
+F29,"Capital Expenditures - Central Staff Services (EFFECTIVE 2022)
+(Formerly: Construction - Central Staff Services; now includes all Capital Expenditures)"
+F31,"Capital Expenditures - General Public Buildings (EFFECTIVE 2022)
+(Formerly: Construction - General Public Buildings; now includes all Capital Expenditures)"
+F32,"Capital Expenditures - Health, Other (EFFECTIVE 2022)
+(Formerly: Construction - Health, Other; now includes all Capital Expenditures)"
+F36,"Capital Expenditures - Own Hospitals (EFFECTIVE 2022)
+(Formerly: Construction - Own Hospitals; now includes all Capital Expenditures)"
+F38,"DISCONTINUED as of 2005 (Formerly: Construction - Hospitals, Other)"
+F44,"Capital Expenditures - Regular Highways (EFFECTIVE 2022)
+(Formerly: Construction - Regular Highways; now includes all Capital Expenditures)"
+F45,"Capital Expenditures - Toll Highways (EFFECTIVE 2022)
+(Formerly: Construction - Toll Highways; now includes all Capital Expenditures)"
+F50,"Capital Expenditures - Housing & Community Development (EFFECTIVE 2022)
+(Formerly: Construction - Housing & Community Development; now includes all Capital Expenditures)"
+F52,"Capital Expenditures - Libraries (EFFECTIVE 2022)
+(Formerly: Construction - Libraries; now includes all Capital Expenditures)"
+F54,"Capital Expenditures - Agriculture, Other (EFFECTIVE 2022)
+(Formerly: Construction - Agriculture, Other (Not used in 2005-2006); now includes all Capital Expenditures)"
+F55,"Capital Expenditures - Fish & Game (EFFECTIVE 2022)
+(Formerly: Construction - Fish & Game; now includes all Capital Expenditures)"
+F56,"Capital Expenditures - Forestry (EFFECTIVE 2022)
+(Formerly: Construction - Forestry; now includes all Capital Expenditures)"
+F59,"Capital Expenditures - - Natural Resources, Other (EFFECTIVE 2022)
+(Formerly: Construction - Natural Resources, Other; now includes all Capital Expenditures)"
+F60,"Capital Expenditures - Parking Facilities (EFFECTIVE 2022)
+(Formerly: Construction - Parking Facilities (NEW for 2005); now includes all Capital Expenditures)"
+F61,"Capital Expenditures - Parks & Recreation (EFFECTIVE 2022)
+(Formerly: Construction - Parks & Recreation; now includes all Capital Expenditures)"
+F62,"Capital Expenditures - Police Protection (EFFECTIVE 2022)
+(Formerly: Construction - Police Protection; now includes all Capital Expenditures)"
+F66,"Capital Expenditures - Protective Inspection & Regulation, NEC (EFFECTIVE 2022)
+(Formerly: Construction - Protective Inspection & Regulation, NEC; now includes all Capital Expenditures)"
+F77,"Capital Expenditures - Welfare Institutions (EFFECTIVE 2022)
+(Formerly: Construction - Welfare Institutions; now includes all Capital Expenditures)"
+F79,"Capital Expenditures - Welfare, Other (EFFECTIVE 2022)
+(Formerly: Construction - Welfare, Other; now includes all Capital Expenditures)"
+F80,"Capital Expenditures - Sewerage (EFFECTIVE 2022)
+(Formerly: Construction - Sewerage; now includes all Capital Expenditures)"
+F81,"Capital Expenditures - Solid Waste Management (EFFECTIVE 2022)
+(Formerly: Construction - Solid Waste Management; now includes all Capital Expenditures)"
+F85,"Capital Expenditures - Other Veterans Services (EFFECTIVE 2022)
+(Formerly: Construction - Other Veterans Services; now includes all Capital Expenditures)"
+F87,"Capital Expenditures - Sea and Inland Port Facilities (EFFECTIVE 2022)
+(Formerly: Construction - Sea and Inland Port Facilities; now includes all Capital Expenditures)"
+F89,"Capital Expenditures - General (EFFECTIVE 2022)
+(Formerly: Construction - General; now includes all Capital Expenditures)"
+F90,"Capital Expenditures - Liquor Stores (EFFECTIVE 2022)
+(Formerly: Construction - Liquor Stores; now includes all Capital Expenditures)"
+F91,"Capital Expenditures - Water Utilities (EFFECTIVE 2022)
+(Formerly: Construction - Water Utilities; now includes all Capital Expenditures)"
+F92,"Capital Expenditures - Electric Utilities (EFFECTIVE 2022)
+(Formerly: Construction - Electric Utilities; now includes all Capital Expenditures)"
+F93,"Capital Expenditures - Gas Utilities (EFFECTIVE 2022)
+(Formerly: Construction - Gas Utilities; now includes all Capital Expenditures)"
+F94,"Capital Expenditures - Transit Utilities (EFFECTIVE 2022)
+(Formerly: Construction - Transit Utilities; now includes all Capital Expenditures)"
+G01,"DISCONTINUED as of 2022, see F01 (Formerly: Other Capital Outlay - Air Transportation"
+G03,"DISCONTINUED as of 2022, see F03 (Formerly: Other Capital Outlay - Miscellaneous Commercial Activities, NEC)"
+G04,"DISCONTINUED as of 2022, see F04 (Formerly: Other Capital Outlay - Correctional Institutions)"
+G05,"DISCONTINUED as of 2022, see F05 (Formerly: Other Capital Outlay - Corrections, Other)"
+G12,"DISCONTINUED as of 2022, see F12 (Formerly: Other Capital Outlay - Elementary and Secondary Education)"
+G16,"DISCONTINUED as of 2022, see F16 (Formerly: Other Capital Outlay - Higher Education, Auxiliary Enterprises)"
+G18,"DISCONTINUED as of 2022, see F18 (Formerly: Other Capital Outlay - Other Higher Education)"
+G21,"DISCONTINUED as of 2022, see F21 (Formerly: Other Capital Outlay - Education, Other)"
+G22,"DISCONTINUED as of 2022, see F22 (Formerly: Other Capital Outlay - Social Insurance Administration)"
+G23,"DISCONTINUED as of 2022, see F23 (Formerly: Other Capital Outlay - Financial Administration)"
+G25,"DISCONTINUED as of 2022, see F25 (Formerly: Other Capital Outlay - Judicial)"
+G26,"DISCONTINUED as of 2022, see F26 (Formerly: Other Capital Outlay - Legislative)"
+G27,"DISCONTINUED as of 2022, see F27 (Formerly: Other Capital Outlay - Environmental Health (NEW for 2007))"
+G29,"DISCONTINUED as of 2022, see F29 (Formerly: Other Capital Outlay - Central Staff)"
+G31,"DISCONTINUED as of 2022, see F31 (Formerly: Other Capital Outlay - General Public Building)"
+G32,"DISCONTINUED as of 2022, see F32 (Formerly: Other Capital Outlay - Health - Other)"
+G36,"DISCONTINUED as of 2022, see F36 (Formerly: Other Capital Outlay - Own Hospitals)"
+G38,"DISCONTINUED as of 2005 (Formerly: Other Capital Outlay - Hospitals, Other)"
+G44,"DISCONTINUED as of 2022, see F44 (Formerly: Other Capital Outlay - Regular Highways)"
+G45,"DISCONTINUED as of 2022, see F45 (Formerly: Other Capital Outlay - Toll Highways)"
+G50,"DISCONTINUED as of 2022, see F50 (Formerly: Other Capital Outlay - Housing & Community Development)"
+G52,"DISCONTINUED as of 2022, see F52 (Formerly: Other Capital Outlay - Libraries)"
+G54,"DISCONTINUED as of 2022, see F54 (Formerly: Other Capital Outlay - Agriculture, Other (Not used in 2005-2006))"
+G55,"DISCONTINUED as of 2022, see F55 (Formerly: Other Capital Outlay - Fish & Game)"
+G56,"DISCONTINUED as of 2022, see F56 (Formerly: Other Capital Outlay - Forestry)"
+G59,"DISCONTINUED as of 2022, see F59 (Formerly: Other Capital Outlay - Natural Resource - Other)"
+G60,"DISCONTINUED as of 2022, see F60 (Formerly: Other Capital Outlay - Parking Facilities (NEW for 2005))"
+G61,"DISCONTINUED as of 2022, see F61 (Formerly: Other Capital Outlay - Parks & Recreation)"
+G62,"DISCONTINUED as of 2022, see F62 (Formerly: Other Capital Outlay - Police Protection)"
+G66,"DISCONTINUED as of 2022, see F66 (Formerly: Other Capital Outlay - Protective Inspection & Regulation, NEC)"
+G77,"DISCONTINUED as of 2022, see F77 (Formerly: Other Capital Outlay - Welfare Institutions)"
+G79,"DISCONTINUED as of 2022, see F79 (Formerly: Other Capital Outlay - Welfare, Other)"
+G80,"DISCONTINUED as of 2022, see F80 (Formerly: Other Capital Outlay - Sewerage)"
+G81,"DISCONTINUED as of 2022, see F81 (Formerly: Other Capital Outlay - Solid Waste Management)"
+G85,"DISCONTINUED as of 2022, see F85 (Formerly: Other Capital Outlay - Other Veterans Services)"
+G87,"DISCONTINUED as of 2022, see F87 (Formerly: Other Capital Outlay - Sea and Inland Port Facilities)"
+G89,"DISCONTINUED as of 2022, see F89 (Formerly: Other Capital Outlay - General, Other)"
+G90,"DISCONTINUED as of 2022, see F90 (Formerly: Other Capital Outlay - Liquor Stores)"
+G91,"DISCONTINUED as of 2022, see F91 (Formerly: Other Capital Outlay - Water Utilities)"
+G92,"DISCONTINUED as of 2022, see F92 (Formerly: Other Capital Outlay - Electric Utilities)"
+G93,"DISCONTINUED as of 2022, see F93 (Formerly: Other Capital Outlay - Gas Utilities)"
+G94,"DISCONTINUED as of 2022, see F94 (Formerly: Other Capital Outlay - Transit Utilities)"
+I89,Interest on General Debt
+I91,Water Utilities - Interest on Debt
+I92,Electric Utilities - Interest on Debt
+I93,Gas Utilities - Interest on Debt
+I94,Transit Utilities - Interest on Debt
+J19,Assistance and Subsidies - Scholarships and Other Subsidies - Education (NEW for 2005; previously under E19)
+J67,"DISCONTINUED as of 2022, see E79 (Formerly: Assistance and Subsidies - Public Welfare, Federal Categorical Assistance Programs (NEW for 2005; previously under E67)"
+J68,"DISCONTINUED as of 2022, see E79 (Formerly: Assistance and Subsidies - Public Welfare, Cash Assistance Programs, Other (NEW for 2005; previously under E68)"
+J85,"DISCONTINUED as of 2019, see E85 (Formerly: Assistance and Subsidies - Veterans' Bonuses (NEW for 2005; previously under E84)"
+K01,"DISCONTINUED as of 2022, see F01 (Formerly: Equipment Only - Air Transportation)"
+K03,"DISCONTINUED as of 2022, see F03 (Formerly: Equipment Only - Miscellaneous Commercial Activities, NEC)"
+K04,"DISCONTINUED as of 2022, see F04 (Formerly: Equipment Only - Correctional Institutions)"
+K05,"DISCONTINUED as of 2022, see F05 (Formerly: Equipment Only - Correction, Other)"
+K12,"DISCONTINUED as of 2022, see F12 (Formerly: Equipment Only - G12 Subcode)"
+K16,"DISCONTINUED as of 2022, see F16 (Formerly: Equipment Only - Higher Education, Auxiliary)"
+K18,"DISCONTINUED as of 2022, see F18 (Formerly: Equipment Only - Higher Education, Other)"
+K21,"DISCONTINUED as of 2022, see F21 (Formerly: Equipment Only - Education, Other)"
+K22,"DISCONTINUED as of 2022, see F22 (Formerly: Equipment Only - Social Insurance Administration)"
+K23,"DISCONTINUED as of 2022, see F23 (Formerly: Equipment Only - Financial Administration)"
+K25,"DISCONTINUED as of 2022, see F25 (Formerly: Equipment Only - Judicial and Legal)"
+K26,"DISCONTINUED as of 2022, see F26 (Formerly: Equipment Only - Legislative)"
+K27,"DISCONTINUED as of 2022, see F27 (Formerly: Equipment Only - Environmental Health (NEW for 2007))"
+K29,"DISCONTINUED as of 2022, see F29 (Formerly: Equipment Only - Central Staff Services)"
+K31,"DISCONTINUED as of 2022, see F31 (Formerly: Equipment Only - General Public Building)"
+K32,"DISCONTINUED as of 2022, see F32 (Formerly: Equipment Only - Health, Other)"
+K36,"DISCONTINUED as of 2022, see F36 (Formerly: Equipment Only - Own Hospitals)"
+K38,"DISCONTINUED as of 2005 (Formerly: Equipment Only - Enterprise Hospitals, Other)"
+K44,"DISCONTINUED as of 2022, see F44 (Formerly: Equipment Only - Regular Highways)"
+K45,"DISCONTINUED as of 2022, see F45 (Formerly: Equipment Only - Toll Highways)"
+K50,"DISCONTINUED as of 2022, see F50 (Formerly: Equipment Only - Housing & Community Development)"
+K52,"DISCONTINUED as of 2022, see F52 (Formerly: Equipment Only - Libraries)"
+K54,"DISCONTINUED as of 2022, see F54 (Formerly: Equipment Only - Agriculture, Other (Not used in 2005-2006))"
+K55,"DISCONTINUED as of 2022, see F55 (Formerly: Equipment Only - Fish & Game)"
+K56,"DISCONTINUED as of 2022, see F56 (Formerly: Equipment Only - Forestry)"
+K59,"DISCONTINUED as of 2022, see F59 (Formerly: Equipment Only - Natural Resources, Other)"
+K60,"DISCONTINUED as of 2022, see F60 (Formerly: Equipment Only - Parking Facilities (NEW for 2005))"
+K61,"DISCONTINUED as of 2022, see F61 (Formerly: Equipment Only - Parks & Recreation)"
+K62,"DISCONTINUED as of 2022, see F62 (Formerly: Equipment Only - Police Protection)"
+K66,"DISCONTINUED as of 2022, see F66 (Formerly: Equipment Only - Protective Inspection and Regulation, NEC)"
+K77,"DISCONTINUED as of 2022, see F77 (Formerly: Equipment Only - Welfare Institutions)"
+K79,"DISCONTINUED as of 2022, see F79 (Formerly: Equipment Only - Welfare, Other)"
+K80,"DISCONTINUED as of 2022, see F80 (Formerly: Equipment Only - Sewerage)"
+K81,"DISCONTINUED as of 2022, see F81 (Formerly: Equipment Only - Solid Waste Management)"
+K85,"DISCONTINUED as of 2022, see F85 (Formerly: Equipment Only - Other Veterans Services)"
+K87,"DISCONTINUED as of 2022, see F87 (Formerly: Equipment Only - Sea and Inland Port Facilities)"
+K89,"DISCONTINUED as of 2022, see F89 (Formerly: Equipment Only - General, Other)"
+K90,"DISCONTINUED as of 2022, see F90 (Formerly: Equipment Only - Liquor Stores)"
+K91,"DISCONTINUED as of 2022, see F91 (Formerly: Equipment Only - Water Utilities)"
+K92,"DISCONTINUED as of 2022, see F92 (Formerly: Equipment Only - Electric Utilities)"
+K93,"DISCONTINUED as of 2022, see F93 (Formerly: Equipment Only - Gas Utilities)"
+K94,"DISCONTINUED as of 2022, see F94 (Formerly: Equipment Only - Transit Utilities)"
+M01,Intergovernmental to Local NEC - Air Transportation
+M04,Intergovernmental to Local NEC - Correctional Institutions (NEW for 2005)
+M05,"Intergovernmental to Local NEC - Corrections, Other"
+M12,Intergovernmental to Local NEC - Elementary and Secondary Education
+M18,Intergovernmental to Local NEC - Higher Education
+M21,Intergovernmental to Local NEC - Education
+M23,Intergovernmental to Local NEC - Financial Administration
+M25,Intergovernmental to Local NEC - Judicial and Legal
+M27,Intergovernmental to Local NEC - Environmental Health (NEW for 2007)
+M29,Intergovernmental to Local NEC - Central Staff Services
+M30,Intergovernmental to Local NEC - General Support
+M32,Intergovernmental to Local NEC - Health
+M36,Intergovernmental to Local NEC - Hospitals (NEW for 2005)
+M38,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Local NEC - Hospitals)
+M44,Intergovernmental to Local NEC - Regular Highways
+M50,Intergovernmental to Local NEC - Housing & Community Development
+M52,Intergovernmental to Local NEC - Libraries
+M54,Intergovernmental to Local NEC - Agriculture) (Not used in 2005-2006)
+M55,Intergovernmental to Local NEC - Fish & Game
+M56,Intergovernmental to Local NEC - Forestry
+M59,Intergovernmental to Local NEC - Natural Resources
+M60,Intergovernmental to Local NEC - Parking Facilities (NEW for 2005)
+M61,Intergovernmental to Local NEC - Parks & Recreation
+M62,Intergovernmental to Local NEC - Police Protection
+M66,Intergovernmental to Local NEC - Protective Inspection & Regulations
+M67,"DISCONTINUED as of 2022, see M79 (Formerly: Intergovernmental to Local NEC - Welfare, Categorical Assistance Programs)"
+M68,"DISCONTINUED as of 2022, see M79 (Formerly: Intergovernmental to Local NEC - Welfare, Cash Assistance Programs)"
+M79,Intergovernmental to Local NEC - Welfare
+M80,Intergovernmental to Local NEC - Sewerage
+M81,Intergovernmental to Local NEC - Solid Waste Management
+M87,Intergovernmental to Local NEC - Sea and Inland Port Facilities
+M89,Intergovernmental to Local NEC - General
+M91,"DISCONTINUED as of 2022, see M89 (Formerly: Intergovernmental to Local NEC - Water Utilities)"
+M92,"DISCONTINUED as of 2022, see M89 (Formerly: Intergovernmental to Local NEC - Electric Utilities)"
+M93,"DISCONTINUED as of 2022, see M89 (Formerly: Intergovernmental to Local NEC - Gas Utilities)"
+M94,"DISCONTINUED as of 2022, see M89 (Formerly: Intergovernmental to Local NEC - Transit Utilities)"
+N01,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Air Transportation)
+N05,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Corrections)
+N12,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Elementary and Secondary Education)
+N18,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Higher Education)
+N21,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Education, Other)"
+N23,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Financial Administration)
+N25,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Judicial and Legal)
+N29,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Central Staff Services)
+N30,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - General Support)
+N32,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Health, Other)"
+N38,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Hospitals, Other)"
+N44,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Regular Highways)
+N50,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Housing & Community Development)
+N52,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Libraries)
+N54,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Agriculture, Other)"
+N55,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Fish & Game)
+N56,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Forestry)
+N59,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Natural Resources, Other)"
+N61,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Parks & Recreation)
+N62,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Police Protection)
+N66,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Protective Inspection and Regulation, NEC)"
+N67,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Welfare, Categorical Assistance Programs)"
+N68,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Welfare, Cash Assistance Programs)"
+N79,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Welfare, Other)"
+N80,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Sewerage)
+N81,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Solid Waste Management)
+N87,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Sea and Inland Port Facilities)
+N89,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - General, Other)"
+N91,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Water Utilities)
+N92,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Electric Utilities)
+N93,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Gas Utilities)
+N94,DISCONTINUED as of 2005 (Formerly: Intergovernmental to General Purpose - Transit Utilities)
+Q12,Intergovernmental to School District - Elementary and Secondary Education
+Q18,"Intergovernmental to School District - Higher Education, Other"
+R01,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Air Transportation)
+R12,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Elementary and Secondary Education)
+R18,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Higher Education, Other)"
+R30,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - General Support)
+R32,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Health, Other)"
+R38,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Hospitals, Other)"
+R44,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Regular Highways)
+R50,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Housing & Community Development)
+R52,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Libraries)
+R54,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Agriculture, Other)"
+R55,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Fish & Game)
+R56,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Forestry)
+R59,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Natural Resources, Other)"
+R61,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Parks & Recreation)
+R62,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Police Protection)
+R66,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Protective Inspection and Regulation, NEC)"
+R79,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Welfare, Other)"
+R80,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Sewerage)
+R81,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Solid Waste Management)
+R87,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Sea and Inland Port Facilities)
+R89,"DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - General, Other)"
+R91,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Water Utilities)
+R92,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Electric Utilities)
+R93,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Gas Utilities)
+R94,DISCONTINUED as of 2005 (Formerly: Intergovernmental to Special District - Transit Utilities)
+S67,"DISCONTINUED as of 2022, see S89 (Formerly: Intergovernmental to Federal - Welfare, Categorical Assistance Programs"
+S74,"DISCONTINUED as of 2007; see E73 (Formerly: Intergovernmental to Federal - Welfare, Vendor Payments for Medical Care)"
+S89,"Intergovernmental to Federal - General, Other"
+T01,Tax - Property
+T09,Tax - General Sales
+T10,Tax - Alcoholic Beverage Sales
+T11,Tax - Amusement
+T12,Tax - Insurance Premiums
+T13,Tax - Motor Fuels Sales
+T14,"DISCONTINUED as of 2022, see T18 (Formerly: Tax - Pari-mutuels)"
+T15,Tax - Public Utilities
+T16,Tax - Tobacco Sales
+T18,Tax - Sports betting (including pari-mutuels) (EFFECTIVE 2023)
+T19,Tax - Other Selective Sales
+T20,Tax - Alcoholic Beverage License
+T21,Tax - Amusement License
+T22,Tax - Corporation License
+T23,Tax - Hunting & Fishing License
+T24,Tax - Motor Vehicle License
+T25,Tax - Motor Vehicle Operators License
+T27,Tax - Public Utility License
+T28,"Tax - Occupation & Business License, NEC"
+T29,Tax - Other License
+T40,Tax - Individual Income
+T41,Tax - Corporation Net Income
+T50,Tax - Death & Gift
+T51,Tax - Documentary & Stock Transfer
+T53,Tax - Severance
+T99,Tax - NEC
+U01,Miscellaneous - Special Assessments
+U11,Miscellaneous - Property Sale Other
+U20,Miscellaneous - Interest Earnings
+U21,Miscellaneous - Other Dividends (New for 2005)
+U30,Miscellaneous - Fines & Forfeits
+U40,Miscellaneous - Rents
+U41,Miscellaneous - Royalties
+U50,Miscellaneous - Donations From Private Sources
+U95,Miscellaneous - Net Lottery Revenue
+U99,"Miscellaneous - General Revenue, NEC"
+W01,DISCONTINUED as of 2022 (Formerly: Sinking Fund - Cash & Deposits)
+W31,DISCONTINUED as of 2022 (Formerly: Bond Fund - Cash & Deposits)
+W61,DISCONTINUED as of 2022 (Formerly: Other Funds - Cash & Deposits)
+X01,Total Earnings on Investments (EFFECTIVE 2017) (Formerly: Employee Pensions Receipts - Local Employee Contribution)
+X02,DISCONTINUED as of 2017 (Formerly: Employee Pensions Receipts - State Employee Contribution)
+X05,DISCONTINUED as of 2017 (Formerly: Employee Pensions Receipts - Contributions from Local Government)
+X06,DISCONTINUED as of 2017 (Formerly: Employee Pensions Receipts - State Government Contributions to Own State System
+X08,DISCONTINUED as of 2017 (Formerly: Employee Pensions Receipts - Total Earnings on Investments)
+X11,DISCONTINUED as of 2017 (Formerly: Employee Pensions Expenses - Benefit Payments)
+X12,DISCONTINUED as of 2017 (Formerly: Employee Pensions Expenses - Withdrawals)
+X21,DISCONTINUED as of 2017 (Formerly: Employee Pensions - Total Cash & Deposits)
+X30,DISCONTINUED as of 2012; Employee Pensions - Total Federal Securities
+X33,"DISCONTINUED as of 2017 (Formerly: Employee Pensions - Federal Agency Securities: Bonds and Mortgage-Backed Securities Issued by CCC, Export-Import Bank, FHA, GNMA, Postal Service, and TVA)"
+X35,"DISCONTINUED as of 2017 (Formerly: Employee Pensions - Other Investments, State and Local Government Securities)"
+X40,"Total Benefits Paid (EFFECTIVE 2017)
+DISCONTINUED as of 2002; see Z77 (Formerly: Employee Pensions - Securities - Corporate Bonds (Book Value))"
+X41,DISCONTINUED as of 2002; see Z78 (Formerly: Employee Pensions - Securities - Corporate Stocks (Book Value))
+X42,"DISCONTINUED as of 2017 (Formerly: Employee Pensions - Securities, Mortgages)"
+X44,DISCONTINUED as of 2012; Employee Pensions - Total Other Securities
+X47,"DISCONTINUED as of 2017 (Formerly: Employee Pensions - Other Investments, Other)"
+X50,Total Employee Contributions (EFFECTIVE 2017)
+X70,Total Government Contributions (State System) (EFFECTIVE 2017)
+X80,Withdrawals (EFFECTIVE 2017)
+Y01,Unemployment Compensation - Contribution
+Y02,Unemployment Compensation - Interest Revenue
+Y04,Unemployment Compensation - Federal Advances
+Y05,Unemployment Compensation - Benefit Payments
+Y06,Unemployment Compensation - Extended & Special Payments
+Y07,Unemployment Compensation - Balance In US Treasury
+Y08,Unemployment Compensation - Other Balance (+ or-)
+Y10,Workers Compensation - Own Contribution
+Y11,Workers Compensation - Other Contributions
+Y12,Workers Compensation - Interest Earnings
+Y13,Workers Compensation - Other Investment Earnings (unused since 1994)
+Y14,Workers Compensation - Benefit Payments
+Y15,Workers Compensation - Other Payments
+Y21,Workers Compensation - Cash & Assets
+Y50,Other Insurance Trust - Own Contributions
+Y51,Other Insurance Trust - Other Contributions
+Y52,Other Insurance Trust - Interest Revenue
+Y53,Other Insurance Trust - Benefit Payment
+Y54,Other Insurance Trust - Other Payments
+Y55,Other Insurance Trust - Other Investments (unused since 1977)
+Y61,Other Insurance Trust - Cash & Deposits
+Z00,Total Salaries & Wages
+Z41,Liquor Stores - Net Sales
+Z42,Liquor Stores Exhibit - Cost of Goods
+Z43,Liquor Stores Exhibit - Operating Expenditures
+Z44,Liquor Stores Exhibit - Other Income
+Z45,Liquor Stores Exhibit - Non-operating Expenditures
+Z46,Liquor Stores Exhibit - Transfer to General Funds
+Z47,Liquor Stores Exhibit - License & Enforcement
+Z48,Liquor Stores Exhibit - Liquor Taxes
+Z51,Lotteries Exhibit - Ticket Sales
+Z52,Lotteries Exhibit - Prizes
+Z53,Lotteries Exhibit - Administrative Expenditures
+Z54,Lotteries Exhibit - Proceeds
+Z61,DISCONTINUED as of 2005 (Formerly: Transit Subsidy Contribution)
+Z62,"DISCONTINUED as of 2017 (Formerly: Employee Pensions - Federally Sponsored Agencies: Bonds and Mortgage-Backed Securities Issued by FHLB, FHLMC, FNMA, and Farm Credit Banks)"
+Z63,"DISCONTINUED as of 2017 (Formerly: Employee Pensions - Corporate Bonds, Domestic)"
+Z70,DISCONTINUED as of 2017 (Formerly: Employee Pensions - Foreign and International Stocks and Bonds)
+Z77,DISCONTINUED as of 2012; Employee Pensions - Corporate Bonds (market value) (NEW as of 2002)
+Z78,DISCONTINUED as of 2017 (Formerly: Employee Pensions - Corporate Stocks (market value) (NEW as of 2002))
+Z83,DISCONTINUED as of 2017 (Formerly: Employee Pensions - Other Securities)
+Z84,DISCONTINUED as of 2017 (Formerly: Employee Pensions - Investments Held in Trust by Other Agencies)
+Z89,DISCONTINUED as of 2017 (Formerly: Employee Pensions - Federal Treasury Securities: Obligations of the U.S. Treasury and Federal Financing Bank)
+19H,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Beginning Outstanding, Education, NEC)"
+19X,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Beginning Outstanding, NEC)"
+19T,"DISCONTINUED as of 2022; Debt not meeting the definition of conduit debt will be coded as U debt, conduit debt will not.
+(Formerly: Long Term Debt Beginning, Nonguaranteed - Public Debt for Private Purpose)"
+19U,Long Term Debt Beginning - Unspecified Public Purposes (NEW as of 2005)
+21A,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue - Full Faith & Credit, Water Utilities)"
+21B,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue - Full Faith & Credit, Electric Utilities)"
+21C,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue - Full Faith & Credit, Gas Utilities)"
+21D,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue - Full Faith & Credit, Transit Utilities)"
+21F,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue - Full Faith & Credit, Elementary & Secondary Education)"
+21G,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue - Full Faith & Credit, Higher Education)"
+21X,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue - Full Faith & Credit, Other NEC)"
+24A,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue, Nonguaranteed - Water Utilities)"
+24B,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue, Nonguaranteed - Electric Utilities)"
+24C,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue, Nonguaranteed - Gas Utilities)"
+24D,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue, Nonguaranteed - Transit Utilities)"
+24F,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue, Nonguaranteed - Elementary and Secondary Education)"
+24G,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue, Nonguaranteed - Higher Education)"
+24T,"DISCONTINUED as of 2022; Debt not meeting the definition of conduit debt will be coded as U debt, conduit debt will not.
+(Formerly: Long Term Debt Issue, Nonguaranteed - Public Debt for Private Purposes)"
+24X,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Issue, Nonguaranteed - Other NEC)"
+29U,Long Term Debt Issue - Unspecified Public Purposes (NEW as of 2005)
+31A,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired - Full Faith & Credit, Water Utilities)"
+31B,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired - Full Faith & Credit, Electric Utilities)"
+31C,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired - Full Faith & Credit, Gas Utilities)"
+31D,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired - Full Faith & Credit, Transit Utilities)"
+31F,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired - Full Faith & Credit, Elementary & Secondary Education)"
+31G,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired - Full Faith & Credit, Higher Education)"
+31X,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired - Full Faith & Credit, Other NEC)"
+34A,DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired Nonguaranteed - Water Utilities)
+34B,DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired Nonguaranteed - Electric Utilities)
+34C,DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired Nonguaranteed - Gas Utilities)
+34D,DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired Nonguaranteed - Transit Utilities)
+34F,DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired Nonguaranteed - Elementary and Secondary Education)
+34G,DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired Nonguaranteed - Higher Education)
+34T,"DISCONTINUED as of 2022; Debt not meeting the definition of conduit debt will be coded as U debt, conduit debt will not.
+(Formerly: Long Term Debt Retired Nonguaranteed - Public Debt for Private Purposes)"
+34X,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Retired Nonguaranteed - Other, NEC)"
+39U,Long Term Debt Retired - Unspecified Public Purposes (NEW for 2005)
+41A,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding - Full Faith & Credit, Water Utilities)"
+41B,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding - Full Faith & Credit, Electric Utilities)"
+41C,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding - Full Faith & Credit, Gas Utilities)"
+41D,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding - Full Faith & Credit, Transit Utilities)"
+41F,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding - Full Faith & Credit, Elementary & Secondary Education)"
+41G,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding - Full Faith & Credit, Higher Education)"
+41X,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding - Full Faith & Credit, Other NEC)"
+44A,DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding Nonguaranteed - Water Utilities)
+44B,DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding Nonguaranteed - Electric Utilities)
+44C,DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding Nonguaranteed - Gas Utilities)
+44D,DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding Nonguaranteed - Transit Utilities)
+44F,DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding Nonguaranteed - Elementary and Secondary Education)
+44G,DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding Nonguaranteed - Higher Education)
+44T,"DISCONTINUED as of 2022; Debt not meeting the definition of conduit debt will be coded as U debt, conduit debt will not. (Formerly: Long Term Debt Outstanding Nonguaranteed - Public Debt for Private Purposes)"
+44X,"DISCONTINUED as of 2005 (Formerly: Long Term Debt Outstanding Nonguaranteed - Other, NEC)"
+49U,Long Term Debt Outstanding - Unspecified Public Purposes (NEW for 2005)
+52T,Long Term Debt Refunded - Issued
+53T,Long Term Debt Refunded - Retired
+61V,Short Term Debt Outstanding - Beginning
+64V,Short Term Debt Outstanding - End of Fiscal Year
+71W,DISCONTINUED as of 2005 (Formerly: Long Term Debt Offsets - Full Faith & Credit)
+74W,DISCONTINUED as of 2005 (Formerly: Long Term Debt Offsets - Nonguaranteed)

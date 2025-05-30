@@ -54,11 +54,13 @@ share of metropolitan area population (B01003, assembled table of cities & metro
 
 #### Potential Additions
 
-Homeownership rate
+- Homeownership rate
 
 - B25002_002E – Total occupied
 
 - B25003_002E – Owner occupied
+
+- B25014 - Occupants per Room 
 
 Homelessness rates
 
@@ -66,12 +68,30 @@ Age of city
 
 Proximity to major metro city
 
-
+Own to Rent Ratio?
 
 # Resilience
 
 Variables listed on the PCIT site, ACS variables listed in Peer Cities Tool Documentation document.
 
+# Outlook / Demographics
+
+Age
+
+- B01001 - Sex by Age (Brackets)
+
+- B01002 - Median
+
+Population Size
+
+- B01003 
+- - Total Population
+- - Population growth rate over last X years (derived from subtracting previous total population)
+- - People per square mile (derived from dividing by area)
+
+Race & Ethnicity
+
+- B03002 - Hispanic or Latino Origin by Race (percent of non-white, non-Hispanic residents)
 
 # Other
 
@@ -79,4 +99,34 @@ Poverty
 
 - B06012 - Place of Birth by Poverty Status in the Past 12 Months
 
-- B17010 - Poverty Status in the Past 12 Months of Families by Family Type by Presence of Related Children by Age of Related Children
+- B17010 - Poverty Status in the Past 12 Months of Families by Family Type by Presence of Related Children by Age of Related Children (percent children in poverty?)
+
+- B17001 - Poverty Status in the Past 12 Months by Sex by Age
+
+Education
+
+- B15003 - Educational Attainment for the Population 25 Years and Over (percent over 25 with a bachelor's or higher)
+
+
+
+# Other Important in Somerville
+
+- Development pressure
+
+- Physical accessibility
+
+- Population Turnover
+
+- Non-resident Owners
+
+- Immigrant population
+
+- The Hills / street geometry
+
+- Stronger mayor setup (formal/informal), no strong counties
+
+- Municipal budget structure - strong state control
+
+- Specific business types - lab space - industry mix
+
+- Arts uses - artists, art studios

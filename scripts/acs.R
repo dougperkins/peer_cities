@@ -3,6 +3,7 @@
 
 load_acs <- function(vars, year) {
   # Pull ACS data for cities
+  
   acs_data <- get_acs(
     geography = "place",
     variables = vars,
@@ -119,26 +120,29 @@ load_acs_pcit_960 <- function() {
   acs_in_pcit
 }
 
-load_acs_subset <- function(year, pop_cutoff) {
-  # Checking with their own guidelines - one of these criteria:
-  # Cities with 50k+ population by 2010
-  # Cities with 25k+ population by the 1960 census
-
-  # 7 deincorporated by 2010 (all NJ?)
-  # 9 annexed all or nearly all of their county; PCIT uses county boundaries
-  # acs_data_50k <- acs_data %>% filter(tot_popE >= 50000)
+get_acs_estimates <- function(acs){
+  acs %<>% select(NAME,
+                  ends_with("E"))
 }
 
-# Load ACS variable descriptions for 2022 ACS 5-year
-acs_var_lookup <- load_variables(2022, "acs5", cache = TRUE)
-acs_var_lookup_23 <- load_variables(2023, "acs5", cache = TRUE)
+# load_acs_subset <- function(year, pop_cutoff) {
+#   # Checking with their own guidelines - one of these criteria:
+#   # Cities with 50k+ population by 2010
+#   # Cities with 25k+ population by the 1960 census
+# 
+#   # 7 deincorporated by 2010 (all NJ?)
+#   # 9 annexed all or nearly all of their county; PCIT uses county boundaries
+#   # acs_data_50k <- acs_data %>% filter(tot_popE >= 50000)
+# }
+
+
 
 
 # View the variables you used in acs_vars
-acs_var_lookup_23 %>%
-  filter(name %in% c(acs_vars_housing)) %>%
-  select(name, label, concept, ) %>%
-  View()
+# acs_var_lookup_23 %>%
+#   filter(name %in% c(acs_vars_housing)) %>%
+#   select(name, label, concept, ) %>%
+#   View()
 
 # List of city FIPS codes (example: add your cities here)
 # city_fips <- c("16000US3651000", "16000US0644000") # New York, Los Angeles
@@ -149,34 +153,24 @@ acs_var_lookup_23 %>%
 
 
 
-census_2010 <- get_decennial(geography = "place")
+# census_2010 <- get_decennial(geography = "place")
 
-years <- 2010:2023
-acs_data_years <- get_acs_years(years, acs_vars_housing)
+# years <- 2010:2023
+# acs_data_years <- get_acs_years(years, acs_vars_housing)
+# 
+# View(acs_data)
 
-View(acs_data)
 
-# todo: ENDS WITH capital E
-acs_data_ests <- acs_data %>%
-  select(
-    NAME,
-    median_home_valueE,
-    median_household_incomeE,
-    occupancy_statusE,
-    housing_unitsE,
-    gross_rent_as_pct_incomeE,
-    tot_popE
-  )
 
-View(acs_data_ests)
+# View(acs_data_ests)
 
-acs_data_ests %>%
-  count(median_home_valueE) %>%
-  arrange(-n)
-acs_data_ests %>%
-  filter(median_home_valueE == "Invalid Number") %>%
-  View()
-acs_data_ests[acs_data_ests$NAME == "Banks town, Alabama", ]$median_home_valueE
+# acs_data_ests %>%
+#   count(median_home_valueE) %>%
+#   arrange(-n)
+# acs_data_ests %>%
+#   filter(median_home_valueE == "Invalid Number") %>%
+#   View()
+# acs_data_ests[acs_data_ests$NAME == "Banks town, Alabama", ]$median_home_valueE
 
 # Add a State column by extracting the state name after the last comma in the NAME column
 acs_data_ests <- acs_data_ests %>%
@@ -185,6 +179,6 @@ acs_data_ests <- acs_data_ests %>%
 # ============================#
 
 
-
-Somerville_data <- acs_data %>%
-  filter(city == "Somerville city, Massachusetts")
+# 
+# Somerville_data <- acs_data %>%
+#   filter(city == "Somerville city, Massachusetts")
