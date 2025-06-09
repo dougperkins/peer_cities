@@ -1,7 +1,7 @@
 # Check feature correlation
 feature_corr <- function(cities){
   cor_matrix <- cities %>%
-    select(-NAME) %>%
+    select(-NAME, where(is.numeric)) %>%
     cor(use = "complete.obs")
   
   #print(cor_matrix)

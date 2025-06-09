@@ -25,21 +25,31 @@ convert_city_pcit_to_acs <- function(city_state, geo_word) {
 }
 
 convert_city_acs_to_pcit <- function(city_acs, county=FALSE){
+  #browser()
   # Make lowercase
   city_acs <- tolower(city_acs)
-  
+  print("start")
   if (county == FALSE){
     # Remove suffixes
-    city_acs <- gsub(" (city|town|township|municipality|village|cdp|borough),", ",", city_acs)
+    city_acs <- gsub(" (city|town|township|municipality|village|cdp|borough|comunidad|urbana),", ",", city_acs)
   }
   else {
-    city_acs <- gsub(" (city|town|township|municipality|village|cdp|borough|county),", ",", city_acs)
+    city_acs <- gsub(" (city|town|township|municipality|village|cdp|borough|comunidad|urbana|municipio|county),", ",", city_acs)
   }
   
   # Split into city and state
   parts <- strsplit(city_acs, ",\\s*")[[1]]
   city <- gsub(" ", "", parts[1])  # Remove spaces
   state_full <- str_to_title(parts[2])
+  print(city)
+  print(state_full)
+  if (state_full == "Moore County Metropolitan Government; Tennessee"){
+    state_full <- "Tennessee"
+  }
+  if (state_full == "Village Of Islands Village; Florida"){
+    state_full <- "Florida"
+  }
+
   #print(state_full)
   
   # Lookup abbreviation

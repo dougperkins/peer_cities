@@ -35,3 +35,36 @@ plot_pca_3d <- function(city_choice, pca_out, clusters){
   
   p %>% layout(title = "3d PCA Plot with Highlight")
 }
+
+plot_kpca_3d <- function(city_choice, df, clusters){
+  df$label <- city_names
+  df$cluster <- as.factor(clusters)
+  
+  df_norm <- df %>% filter(highlight == "normal")
+  
+  
+  df_norm %<>%
+    mutate(highlight = case_when(label == city_choice ~ "highlight",
+                                 .default = "normal"))
+  
+  #df_hi <- df %>% filter(highlight == "highlight")
+  
+  p <- plot_ly(df_norm,
+               x = df_norm[[1]], y = df_norm[[2]], z = df_norm[[3]],
+               type = "scatter3d",
+               mode = "markers",
+               color = ~cluster,
+               text = ~label,
+               marker = list(size=4)
+  ) %>%
+    layout(title = "Interactive 3d PCA Plot")
+  
+  p <- add_trace(p, data = df_hi,
+                 x = df_hi[[1]], y = df_hi[[2]], z = df_hi[[3]],
+                 type = "scatter3d",
+                 mode = "markers",
+                 text = ~label,
+                 marker = list(size=10, color="yellow"))
+  
+  p %>% layout(title = "3d PCA Plot with Highlight")
+}

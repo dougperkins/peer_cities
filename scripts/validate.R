@@ -7,8 +7,17 @@ rules <- validator(
     gross_rent_as_pct_incomeE_complete = !is.na(gross_rent_as_pct_incomeE),
     tot_popE_complete = !is.na(tot_popE),
     name_complete = !is.na(NAME),
-    state_complete = !is.na(State)
+    state_complete = !is.na(State),
+    
+    home_value_to_income_complete = !is.na(home_value_to_income),
+    homeownership_rate_complete = !is.na(homeownership_rate),
+    pct_rent_gt30_complete = !is.na(pct_rent_gt30),
+    pct_metro_area_pop_complete = !is.na(pct_metro_area_pop),
+    housing_units_per_sqmi_complete = !is.na(housing_units_per_sqmi)
+    
 )
+
+
 
 # Perform the validation
 v <- confront(acs_data_ests, rules)
