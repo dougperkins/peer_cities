@@ -1,0 +1,186 @@
+add_distance_to_chosen <- function(df, city_col = "city", reference_city = "Somerville city, Massachusetts") {
+  # Identify numeric columns
+  numeric_cols <- df %>%
+    select(where(is.numeric)) %>%
+    colnames()
+  
+  # Extract reference row
+  chosen_city_vec <- df %>%
+    filter(!!sym(city_col) == reference_city) %>%
+    select(all_of(numeric_cols)) %>%
+    slice(1) %>%   # in case of duplicates
+    unlist(use.names = FALSE)
+  
+  # Compute Euclidean distance to reference
+  df <- df %>%
+    rowwise() %>%
+    mutate(
+      distance_to_chosen = sqrt(sum((c_across(all_of(numeric_cols)) - chosen_city_vec)^2))
+    ) %>%
+    ungroup()
+  
+  return(df)
+}
+
+get_similar_cities <- function(cities, chosen_city, weight) {
+  # Input validation
+  if (!"city" %in% colnames(cities)) {
+    stop("The dataframe must contain a 'city' column.")
+  }
+  if (!chosen_city %in% cities$city) {
+    stop("The chosen_city is not found in the 'city' column.")
+  }
+  if (weight %% 2 != 0) {
+    stop("Weight must be an even number.")
+  }
+  
+  # Get numeric variables (excluding 'city' column)
+  numeric_vars <- sapply(cities, is.numeric)
+  numeric_vars["city"] <- FALSE  # exclude city name column
+  vars <- names(cities)[numeric_vars]
+  
+  # Initialize list to hold nearby cities for each variable
+  close_city_lists <- list()
+  
+  for (var in vars) {
+    # Sort the dataframe by the current variable
+    sorted_df <- cities[order(cities[[var]]), ]
+    
+    # Find the position of the chosen city
+    city_index <- which(sorted_df$city == chosen_city)
+    
+    # Get half the weight above and below
+    half_weight <- weight / 2
+    lower_index <- max(city_index - half_weight, 1)
+    upper_index <- min(city_index + half_weight, nrow(sorted_df))
+    
+    # Get the indices above and below (excluding the chosen city itself)
+    nearby_indices <- setdiff(seq(floor(lower_index), ceiling(upper_index)), city_index)
+    close_cities <- sorted_df$city[nearby_indices]
+    
+    # Store in the list
+    close_city_lists[[var]] <- close_cities
+  }
+  
+  # Find intersection across all lists
+  common_cities <- Reduce(intersect, close_city_lists)
+  
+  return(common_cities)
+}
+
+get_peers_wt <- function(cities, chosen_city, weight, ...) {
+  # Parse variable-specific weight overrides
+  var_weights <- list(...)
+  
+  if (!"city" %in% colnames(cities)) {
+    stop("The dataframe must contain a 'city' column.")
+  }
+  if (!chosen_city %in% cities$city) {
+    stop("The chosen_city is not found in the 'city' column.")
+  }
+  if (weight %% 2 != 0) {
+    stop("Default weight must be an even number.")
+  }
+  
+  # Identify numeric variables (excluding city column)
+  numeric_vars <- names(Filter(is.numeric, cities))
+  numeric_vars <- setdiff(numeric_vars, "city")
+  
+  # Initialize list to hold nearby cities for each variable
+  close_city_lists <- list()
+  
+  for (var in numeric_vars) {
+    # Determine weight to use for this variable
+    var_weight <- if (!is.null(var_weights[[var]])) {
+      as.integer(var_weights[[var]])
+    } else {
+      weight
+    }
+    
+    if (var_weight %% 2 != 0) {
+      stop(paste("Weight for", var, "must be even."))
+    }
+    
+    half_weight <- var_weight / 2
+    
+    # Sort cities by the current variable
+    sorted_df <- cities[order(cities[[var]]), ]
+    city_index <- which(sorted_df$city == chosen_city)
+    
+    lower_index <- max(city_index - half_weight, 1)
+    upper_index <- min(city_index + half_weight, nrow(sorted_df))
+    
+    nearby_indices <- setdiff(seq(floor(lower_index), ceiling(upper_index)), city_index)
+    close_cities <- sorted_df$city[nearby_indices]
+    
+    close_city_lists[[var]] <- close_cities
+  }
+  
+  # Return cities common to all lists
+  common_cities <- Reduce(intersect, close_city_lists)
+  return(common_cities)
+}
+
+get_peers_iterative <- function(cities, chosen_city, weight, ...) {
+  var_weights <- list(...)
+  
+  if (!"city" %in% colnames(cities)) {
+    stop("The dataframe must contain a 'city' column.")
+  }
+  if (!chosen_city %in% cities$city) {
+    stop("The chosen_city is not found in the 'city' column.")
+  }
+  if (weight %% 2 != 0) {
+    stop("Default weight must be an even number.")
+  }
+  
+  numeric_vars <- names(Filter(is.numeric, cities))
+  numeric_vars <- setdiff(numeric_vars, "city")
+  close_city_lists <- list()
+  
+  for (var in numeric_vars) {
+    var_weight <- if (!is.null(var_weights[[var]])) {
+      as.integer(var_weights[[var]])
+    } else {
+      weight
+    }
+    
+    if (var_weight %% 2 != 0) {
+      stop(paste("Weight for", var, "must be even."))
+    }
+    
+    target_value <- cities[cities$city == chosen_city, var]
+    other_cities <- cities[cities$city != chosen_city, c("city", var)]
+    
+    # Initialize selected peers
+    selected_peers <- character()
+    
+    for (i in 1:(var_weight / 2)) {
+      # Filter out already selected peers
+      remaining <- other_cities[!(other_cities$city %in% selected_peers), ]
+      
+      # Get closest city below
+      below <- remaining[remaining[[var]] < target_value, ]
+      if (nrow(below) > 0) {
+        closest_below <- below[which.max(below[[var]]), "city"]
+        selected_peers <- c(selected_peers, closest_below)
+      }
+      
+      # Refresh remaining
+      remaining <- other_cities[!(other_cities$city %in% selected_peers), ]
+      
+      # Get closest city above
+      above <- remaining[remaining[[var]] > target_value, ]
+      if (nrow(above) > 0) {
+        closest_above <- above[which.min(above[[var]]), "city"]
+        selected_peers <- c(selected_peers, closest_above)
+      }
+    }
+    
+    close_city_lists[[var]] <- selected_peers
+  }
+  
+  common_cities <- Reduce(intersect, close_city_lists)
+  return(common_cities)
+}
+
