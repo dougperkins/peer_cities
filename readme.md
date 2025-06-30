@@ -1,23 +1,38 @@
-# Peer Cities
+# Temporal Peer Cities
 
-This project aims to help cities identify their "housing peer cities" - cities that are similar with regard to a set of housing-related variables. It improves upon existing tools to do so by:
+## Description
 
-- Improving upon the set of American Community Survey (ACS) variables used to cluster cities
+This project aims to help cities identify their "housing peer cities" - cities that are similar with regard to a set of variables (currently only housing-related variables). It improves upon existing tools to do so by deriving temporal versions of these variables. Cities are clustered and have their peers identified by both the current state of their housing situation, as other analyses and tools have done, and by their housing variables' trajectories over time. This prevents pairs of cities from being considered peers if, for example, they appear similar today, but one has had a continuously worsening housing crisis from 2009-2023 and the other a continuously improving housing crisis in the same period.
 
-- Deriving temporal versions of these variables, so that clustering captures 
+## Data
 
+Most of the data is from the 2023, 2018, and 2013 **American Community Survey** 5-year data, accessed using their API via the tidycensus R library with a Census API key. To simplify development, the project is currently following the [process](https://www.chicagofed.org/region/peer-cities-identification-tool/about-the-peer-cities-identification-tool) used by the Federal Reserve Bank of Chicago in their Peer City Identification Tool (PCIT). The PCIT, based on an earlier project, includes 960 places across the United States that meet one of the following criteria:
 
+- The place was incorporated, with at least 25,000 population by the 1960 census.
 
-Data is from the 2023, 2018, and 2013 American Community Survey 5-year data, accessed using their API via the tidycensus R library with a Census API key.
+- The place was incorporated, with at least 50,000 population by the 2010 census.
 
-Clone this project and run top_level.R line by line in RStudio.
+Seven of the places in the PCIT were deincorporated by 2010, and these (all in New Jersey) use data for their presently-existing township boundaries. Ten of them are places which between 1960 and 2010 annexed all or nearly all of their county, and data for these are reported using their county boundaries. The list of these can be found in the link to the PCIT process above. For each year of ACS data, the data for the set of cities included in the PCIT is gathered from a combination of data from their "place", "township", and "county" geographies. ACS data at the "metropolitan statistical area/micropolitan statistical area" level is also gathered for each year in order to derive the percent of metropolitan area population variable.
 
-Dependencies are imported at the top of top_level.R
+Data from **tigris** is additionally used (currently only city area in square miles) for the derivation of variables from ACS variables (currently only housing units per square mile). This data is similarly from 2023, 2018, and 2013, and uses the same geographies.
+
+## How it Works
+
+The project currently, for development purposes, uses a carefully selected subset of six distinct housing features, which become 18 features when the three years' data are loaded, and become 36 features when difference variables are created between them. 
+
+The project currently scales the data and uses **PCA**, **kPCA (RBF)**, and **kPCA (polynomial)** dimension reduction as preprocessing methods, and for each resulting dataset uses **k-means**, **hierarchical**, and **HDBScan** clustering to attempt to uncover the structure of the data. HDBScan's MinPts hyperparameter is tuned with grid search and comparison across 10+ internal clustering evaluation metrics. Whichever clustering method results in the best clustering, according to comparison across the same 10+ internal clustering evaluation metrics, is the one that is used for determining the peer list for that particular dimension-reduced dataset.
+
+The dimension-reduced space and clustering are then put to use, as the cities outside of the chosen city's cluster are filtered out, and the city's nearest neighbors within dimension-reduced space are considered potential peers. Currently, each of these lists of peers are arbitrarily intersected to create a final list of peers which are both near the chosen city and are within the same cluster in every dimension-reduced space.
+
+## How To Use
+
+- Clone this project from https://github.com/dougperkins/peer_cities.git
+
+- Run 1_top_level.R line by line in RStudio (this will ultimately be optional, as there will be a streamlit tool)
+
+Dependencies are imported at the top of top_level.R in the p_load() call
 
 ## Directory Structure
-
-- **`notebooks/`**  
-  Includes Jupyter Notebooks for exploratory data analysis (EDA), prototyping, and documenting workflows.
 
 - **`references/`**  
   Stores external resources such as research papers, datasets, or documentation that provide context.
@@ -25,292 +40,53 @@ Dependencies are imported at the top of top_level.R
 - **`reports/`**  
   Contains generated reports, such as PDFs, HTML files, or Markdown documents.
 
-- **`src/`**  
+- **`scripts/`**  
   Holds the main source code for the project.
   
-  - top_level.R
+  - **1_top_level.R** - the main script
   
-  - constants.R
+  - **acs.R** - functions for loading ACS data
   
-  - utils.R
+  - **alfin.R** - functions for loading ALFIN data
   
-  - acs.R
+  - **app.py** - the streamlit app
   
-  - validate.R
+  - **cluster.R** - functions for clustering
   
-  - preprocess.R
+  - **constants.R** - variable sets
   
-  - dim_red.R
+  - **dim_red.R** - functions for dimension reduction
   
-  - cluster.R
+  - **eval.R** - functions for evaluating clustering
   
-  - eval.R
+  - **peers.R** - functions for obtaining peer lists
   
-  - peers.R
+  - **preprocess.R** - functions for preprocessing data
   
-  - app.py
+  - **utils.R** - utility functions and miscellaneous bits that need restructuring
+  
+  - **validate.R** - data validation
 
 - **`data/`**
   
-  Holds public data used in the project
+  Holds public data used in the project (currently no private data is used)
+  
+  - **`acs`** - American Community Survey data caches
+  
+  - **`alfin`** - Annual Survey of Local Government Finances data (for use in finance theme, implementation not complete)
+  
+  - **`area`**
+  
+  - **`fips`** - Federal Information Processing Standards codes for states/counties/places
+  
+  - **`metro_areas`** - Cached tables connecting cities to metropolitan areas (currently only used for % metropolitan area population) 
+  
+  - **`pcit`** - Data downloaded from the PCIT
+  
+  - **`tigris`** - Tigris data including land area in square miles cached (currently only used for housing units per square mile) 
 
-## Current Conceptual Workflow
+- **`gifs`** - Animated plots showing the chosen city among the clusters of other cities in each reduced-dimension space. For use in the Streamlit app.
 
-- Load & combine data
+- **`html`** - Interactive plots in each dimension-reduced space. For use in the Streamlit app. 
 
-- Feature Engineering
-  
-  - Derived features
-    
-    - Aggregates of ACS variables (ie pre-1980 structures)
-    
-    - Percents
-    
-    - Temporal
-  
-  - Log transformations of skewed variables
-
-- Filter cities
-
-- Preprocessing
-  
-  - Dimension Reduction (generate DR datasets for pre-checks, clustering, and/or final vis.)
-    
-    - PCA
-    
-    - kPCA (rbfdot)
-  
-  - Pre-Clustering (Tendency) checks
-    
-    - PCA: if 1st 2-3 PCs have high variance explained; low "intrinsic dimensionality"
-    
-    - Distance distribution
-    
-    - Hopkins
-  
-  - Feature Selection
-    
-    - Variance
-    
-    - Correlation
-    
-    - Spectral / Sparse Learning Multivariate Filter method? (per review, these work best)
-
-- Clustering
-
-- Evaluation
-
-- Visualization
-
-- Peer List
-
-- Run App
-
-## Current Workflow
-
-- Load all cities and all variables
-  
-  - ACS 5y 2013, 2018, 2023: places, counties, townships (NJ only)
-
-- As a list of place/county/township-row dfs with identical variables:
-  
-  - Filter down to the 960 PCIT cities
-  
-  - Drop margin of error columns for all variables
-  
-  - Derive variables
-  
-  - Tag each df's columns with its year
-  
-  - Bind each df into one large df (now a city-row df with lag variables)
-  
-  - Derive temporal variables (2023-2018, 2018-2013)
-
-## Future Development
-
-Bolded things are more immediate goals.
-
-- Features
-  
-  - Add and remove features in existing themes
-    
-    - Total population should come from either the decennial Census or between-year Census Bureau population estimates, *not ACS data*. Affects a number of features in PCIT.
-    
-    - Comparisons should only be done between *non-overlapping* 5y ACS estimates.
-    
-    - Housing
-      
-      - Very few remaining possible static ACS variables
-      
-      - Many remaining derived ACS variables
-        
-        - 
-  
-  - Temporal versions of existing features
-    
-    - **5-year differences (only 3): 2019-2023, 2014-2018, 2009-2013,**
-      
-      - Once 2024 is released, can get 4: 2005-2009 and move the rest up 1
-    
-    - **Lag variables**
-    
-    - 1-year differences (only : 2023-2024, 2022-2023, 2022-2024? ...
-      
-      - Capture more recent changes
-      
-      - Many more data points per city
-      
-      - Pre-post 2008, 2019
-  
-  - Density versions of existing features
-    
-    - Area-, housing unit-, household-, and population-densities
-  
-  - Percents of metro area, county, state, nation
-
-- Data
-  
-  - MA
-    
-    - Financial data (DLS Databank)
-  
-  - US
-    
-    - Database of Accredited Post-Secondary Institutions and Programs
-    
-    - Rand State Statistics
-    
-    - Bureau of Economic Analysis (county level)
-    
-    - National League of Cities
-    
-    - ALFIN
-    
-    - AHS
-    
-    - 1970 Census
-      
-      - Nat. Historical GIS of Minnesota Population Center @ U of Minnesota, for calculating change in labor share of manufacturing 1970-2022.
-  
-  - Global
-    
-    - Socioeconomic dataset in Hachaichi 2023
-    
-    - Climate dataset in Hachaichi 2023
-
-- Themes
-  
-  - Housing
-  - Housing Changes
-  - Financial
-  - General
-
-- Uses
-  
-  - Leave-feature-out peers
-  
-  - Previously-similar peers
-  
-  - Non-peer extreme examples
-  
-  - Most similar in state
-  
-  - Most similar per state
-  
-  - Most similar per county
-  
-  - Peer tiers (esp. with hierarchical methods)
-    
-    - Displayed in graph (how to transform into graph data?)
-
-- City Lists
-  
-  - Expanded US cities
-    
-    - Townships, other geographies?
-  
-  - Global cities
-
-- Preprocessing
-  
-  - **Dimension Reduction**
-    
-    - PCA
-      
-      - For multicollinearity
-      
-      - For visualization
-      
-      - Working with low-variance PCs
-    
-    - kPCA
-      
-      - Tune hyperparameters
-      
-      - For visualization
-      
-      - Other kernels: polydot, tanhdot, ...?
-      
-      - As input to clustering?
-    
-    - t-SNE (not for clustering input)
-      
-      - Tune hyperparameters
-      
-      - For visualization
-        
-        - Animate tuning
-    
-    - UMAP
-    
-    - LLE
-
-- Model
-  
-  - Centroid-based
-    
-    - k-means
-      
-      - As a clustering
-      
-      - As a method to tune k
-      
-      - Hierarchical clustering
-  
-  - Density-based
-    
-    - DBSCAN
-    - OPTICS
-  
-  - Connectivity-based
-    
-    - Hierarchical clustering
-    - BIRCH
-  
-  - Spectral clustering
-  
-  - Deep clustering
-  
-  - Ensemble clustering
-
-- Reorganizing Code
-  
-  - 
-
-- Questions
-  
-  - Better to use summary stat, full data, or something else?
-  
-  - Several approaches: which is best?
-    
-    - No selection --> dimension reduction --> cluster
-    
-    - Selection --> dimension reduction --> cluster
-    
-    - Selection (many) --> cluster (high dimensional methods)
-    
-    - Selection (few) --> cluster
-  
-  - Cluster city-years instead of using temporal information as lag variables
-  
-  - Inclusion of many variables for a given topic weighs it in the clustering
+## 

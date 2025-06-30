@@ -13,30 +13,53 @@
 # % over 25 with a bachelor's
 # % living below poverty line
 
+load_scripts <- function(){
+  
+  # Scripts with helper functions
+  source("./scripts/utils.R")
+  
+  # Scripts to load data
+  source("./scripts/acs.R")
+  # source("./scripts/alfin.R")
+  source("./scripts/tigris.R")
+  source("./scripts/fips.R")
+  
+  # Scripts to preprocess
+  source("./scripts/preprocess.R")
+  
+  # Scripts with main logic
+  source("./scripts/dim_red.R")
+  source("./scripts/cluster.R")
+  source("./scripts/eval.R")
+  source("./scripts/plot.R")
+  source("./scripts/peers.R")
+  
+}
+
 vars_somerville_jan_2023 <- c()
 vars_somerville_summer_2023 <- c()
 
+feats <- list()
+feats$housing <- list()
 
-# These are the names that we want the variables to end up having
-# This is probably unnecessary - I think it's just names()
-features_pcit_housing <- c("pct_built_pre_1980",
-                           "vacancy_rate",
-                           "home_value_to_income",
-                           "homeownership_rate",
-                           "pct_rent_gt30",
-                           "pct_metro_area_pop") 
+feats$housing$pcit <- c("pct_built_pre_1980",
+                        "vacancy_rate",
+                        "home_value_to_income",
+                        "homeownership_rate",
+                        "pct_rent_gt30",
+                        "pct_metro_area_pop") 
 
-features_somerstat_housing_1 <- c(# FROM PCIT
-                                    "home_value_to_income", #
-                                    "homeownership_rate", #
-                                    "pct_rent_gt30", #
-                                    "vacancy_rate", ##
-                                    "pct_built_pre_1980", ##
-                                    
-                                    # New from SomerStat
-                                    "median_home_valueE") # 
+feats$housing$somerstat_1 <- c(# FROM PCIT
+                              "home_value_to_income", #
+                              "homeownership_rate", #
+                              "pct_rent_gt30", #
+                              "vacancy_rate", ##
+                              "pct_built_pre_1980", ##
+                              
+                              # New from SomerStat
+                              "median_home_valueE") # 
 
-features_somerstat_housing_2 <- c(# FROM PCIT
+feats$housing$somerstat_2 <- c(# FROM PCIT
                                 "home_value_to_income",  
                                 "homeownership_rate",
                                 "pct_rent_gt30",
@@ -46,17 +69,60 @@ features_somerstat_housing_2 <- c(# FROM PCIT
                                 "median_home_valueE",
                                 "housing_units_per_sqmi") 
 
-features_all_housing <- c(# FROM PCIT
-                          "home_value_to_income",
-                          "homeownership_rate",
-                          "pct_rent_gt30",
-                          "pct_metro_area_pop",
-                          "vacancy_rate",
-                          "pct_built_pre_1980",
-                          
-                          # New from SomerStat
-                          "median_home_valueE",
-                          "housing_units_per_sqmi")
+feats$housing$pcit_somerstat <- c(# FROM PCIT
+                                "home_value_to_income",
+                                "homeownership_rate",
+                                "pct_rent_gt30",
+                                "pct_metro_area_pop",
+                                "vacancy_rate",
+                                "pct_built_pre_1980",
+                                
+                                # New from SomerStat
+                                "median_home_valueE",
+                                "housing_units_per_sqmi")
+
+
+# These are the names that we want the variables to end up having
+# This is probably unnecessary - I think it's just names()
+
+# features_pcit_housing <- c("pct_built_pre_1980",
+#                            "vacancy_rate",
+#                            "home_value_to_income",
+#                            "homeownership_rate",
+#                            "pct_rent_gt30",
+#                            "pct_metro_area_pop") 
+
+# features_somerstat_housing_1 <- c(# FROM PCIT
+#                                     "home_value_to_income", #
+#                                     "homeownership_rate", #
+#                                     "pct_rent_gt30", #
+#                                     "vacancy_rate", ##
+#                                     "pct_built_pre_1980", ##
+#                                     
+#                                     # New from SomerStat
+#                                     "median_home_valueE") # 
+
+# features_somerstat_housing_2 <- c(# FROM PCIT
+#                                 "home_value_to_income",  
+#                                 "homeownership_rate",
+#                                 "pct_rent_gt30",
+#                                 "pct_metro_area_pop",
+#                                 
+#                                 # New from SomerStat
+#                                 "median_home_valueE",
+#                                 "housing_units_per_sqmi") 
+
+# features_all_housing <- c(# FROM PCIT
+#                           "home_value_to_income",
+#                           "homeownership_rate",
+#                           "pct_rent_gt30",
+#                           "pct_metro_area_pop",
+#                           "vacancy_rate",
+#                           "pct_built_pre_1980",
+#                           
+#                           # New from SomerStat
+#                           "median_home_valueE",
+#                           "housing_units_per_sqmi")
 
 #features_boise_general <- c()
 
@@ -71,6 +137,8 @@ state_abbrs["DC"] <- "District Of Columbia"
 state_abbrs["PR"] <- "Puerto Rico"
 
 # ACS ####
+metro_vars <- c(metro_pop = "B01003_001")
+
 ## Housing ####
 acs_vars_housing <- c(
   
@@ -106,7 +174,7 @@ acs_vars_housing <- c(
     
     ### Median Year Householder Moved Into Unit by Tenure
     median_year_moved_in_owner = "B25039_002",
-    median_year_moved_in_renter = "B25039_003",
+    #median_year_moved_in_renter = "B25039_003", # removed for now due to 4 NAs
     
     ### Occupants per Room ####
     # TODO Percent
@@ -148,7 +216,7 @@ acs_vars_housing <- c(
     str_mobile_home = "B25024_010",
     str_boat_rv_van = "B25024_011",
     # 
-    # ### Year Moved In ####
+    ### Year Moved In ####
     # TODO Percent
     # TODO Adjust for 2018, 2013
     # Maybe just use median instead
@@ -278,9 +346,12 @@ acs_housing_vars_diffs_2023 <- c(
   yr_str_built_median = "B25035_001"
 )
 
-acs_housing_vars_by_year <- list(
+all_variables <- list()
+
+all_variables$acs <- list(
   "2013" = c(acs_vars_housing, acs_housing_vars_diffs_2013),
   "2018" = c(acs_vars_housing, acs_housing_vars_diffs_2018),
+  "2021" = c(acs_vars_housing, acs_housing_vars_diffs_2023),
   "2023" = c(acs_vars_housing, acs_housing_vars_diffs_2023)
 )
 
@@ -299,7 +370,19 @@ rules <- validator(
     state_complete = !is.na(State)
 )
 
+# Orange is missing
+township_names_tigris_2021 <- c(
+  "Belleville township",
+  "Bloomfield township",
+  "Irvington township",
+  "Montclair township",
+  "Nutley township",
+  "West Orange township"
+)
 
+# county_names_tigris_2021 <- c(
+#   
+# )
 
 missing_places <- c(
     "Bergenfield borough, New Jersey",
@@ -360,3 +443,15 @@ missing_townships <- c(
     "City of Orange township, Essex County, New Jersey",
     "West Orange township, Essex County, New Jersey"
 )
+
+# # Load ACS variable descriptions for 2022 ACS 5-year
+acs_var_lookup_21 <- load_variables(2021, "acs5", cache = TRUE)
+# acs_var_lookup_22 <- load_variables(2022, "acs5", cache = TRUE) # For comparison with existing tools
+# acs_var_lookup_23 <- load_variables(2023, "acs5", cache = TRUE)
+# acs_var_lookup_18 <- load_variables(2018, "acs5", cache = TRUE)
+# acs_var_lookup_13 <- load_variables(2013, "acs5", cache = TRUE)
+
+# # Check if the variable numbers are present in each year
+# TODO Check that they also however need to have the same labels over the years
+# acs_vars_housing
+# check_acs_vars(acs_vars_housing, list(acs_var_lookup_23, acs_var_lookup_18, acs_var_lookup_13))

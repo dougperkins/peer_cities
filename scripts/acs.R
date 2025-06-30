@@ -1,6 +1,23 @@
 # Set your Census API key
 # census_api_key(API_KEY, install = TRUE, overwrite = TRUE)
 
+
+
+# Used to get particular years' variable sets
+get_acs_vars <- function(years, variables_list) {
+  years <- as.character(years)
+  
+  missing_years <- setdiff(years, names(variables_list$acs))
+  if (length(missing_years) > 0) {
+    warning("No variables defined for year(s): ", paste(missing_years, collapse = ", "))
+  }
+  
+  purrr::compact(purrr::map(years, ~ variables_list$acs[[.x]])) %>%
+    rlang::set_names(years[years %in% names(variables_list$acs)])
+  
+  
+}
+
 # Load 1 5y DF ####
 load_acs <- function(vars, year) {
   # Pull ACS data for cities
@@ -72,8 +89,22 @@ load_acs_metro_areas <- function(vars, year){
     geometry = TRUE
   ) %>%
     mutate(NAME = gsub(pattern = " Metro Area", "", NAME)) %>%
-    mutate(NAME = gsub(pattern = " Micro Area", "", NAME))
+    mutate(NAME = gsub(pattern = " Micro Area", "", NAME)) %>%
+    select(-metro_popM)
 }
+
+# Used to load each year of acs data
+# TODO reorganize - there should definitely not be three layers of functions lol
+# load_all_acs_5y_housing <- function(years, variables, vars_metro) {
+#   purrr::map(as.character(years), function(y) {
+#     get_acs_5y_housing(
+#       vars = variables$acs[[y]],
+#       vars_metro = vars_metro,
+#       year = y
+#     )
+#   }) %>%
+#     rlang::set_names(as.character(years))
+# }
 
 
 # Load 3 5y DF for PCIT ####
@@ -82,12 +113,40 @@ load_acs_metro_areas <- function(vars, year){
 # TODO: Add in other variables for metro area, to engineer more city variables
 # TODO: Fix error with 2009-2013, 2014-2018 geometry downloads
 # Error : A state must be specified for this year/dataset combination.
-load_acs_housing <- function(year) {
-  # Pull ACS data for cities
-  vars <- acs_housing_vars_by_year[[as.character(year)]]
+
+
+load_or_dl_one_acs_5y_housing <- function(vars, vars_metro, year) {
+  message("Processing ACS data for ", year)
+  dir.create("./data/acs", showWarnings = FALSE, recursive = TRUE)
   
-  geom <- if (as.numeric(year) >= 2019) TRUE else FALSE
+  base_filename <- paste0("./data/acs/acs_5y_housing_", year)
+  files_exist <- all(file.exists(paste0(base_filename, "_places.csv"),
+                                 paste0(base_filename, "_counties.csv"),
+                                 paste0(base_filename, "_townships.csv"),
+                                 paste0(base_filename, "_metros.gpkg")))
+  
+  if (files_exist) {
+    message("Loading cached ACS data for ", year)
     
+    acs_places <- readr::read_csv(paste0(base_filename, "_places.csv"), show_col_types = FALSE)
+    acs_counties <- readr::read_csv(paste0(base_filename, "_counties.csv"), show_col_types = FALSE)
+    acs_townships <- readr::read_csv(paste0(base_filename, "_townships.csv"), show_col_types = FALSE)
+    acs_metros <- st_read(paste0(base_filename, "_metros.gpkg"))
+    
+    return(list("places" = acs_places, 
+                "counties" = acs_counties, 
+                "townships" = acs_townships,
+                "metros" = acs_metros))
+  }
+  
+  message("Downloading ACS data for ", year)
+  
+  #geom <- if (as.numeric(year) >= 2019) TRUE else FALSE
+  # We may not need geoms from here ever - can't get some for older years,
+  # can always get them from tigris, although there's the weird error
+  # with some city/metro geometries when trying to match metro areas to cities.
+  geom <- FALSE  
+  
   acs_places <- get_acs(
     geography = "place",
     variables = vars,
@@ -97,6 +156,8 @@ load_acs_housing <- function(year) {
     geometry = geom
   )
   
+  readr::write_csv(acs_places, paste0(base_filename, "_places.csv"))
+  
   acs_counties <- get_acs(
     geography = "county",
     variables = vars,
@@ -105,6 +166,8 @@ load_acs_housing <- function(year) {
     output = "wide",
     geometry = geom
   )
+  
+  readr::write_csv(acs_counties, paste0(base_filename, "_counties.csv"))
   
   acs_townships <- get_acs(
     geography = "county subdivision",
@@ -116,16 +179,24 @@ load_acs_housing <- function(year) {
     geometry = geom
   )
   
+  acs_townships %<>%
+    mutate(GEOID = as.character(GEOID))
+  
+  readr::write_csv(acs_townships, paste0(base_filename, "_townships.csv"))
+  
   acs_metros <- get_acs(
     geography = "metropolitan statistical area/micropolitan statistical area",
-    variables = "B01003_001",  # total population only, for now
+    variables = vars_metro,  # total population only, for now
     survey = "acs5",           # or "acs5"
     year = as.numeric(year),    # most recent available
     output = "wide",
-    geometry = geom
+    geometry = TRUE
   ) %>%
     mutate(NAME = gsub(pattern = " Metro Area", "", NAME)) %>%
-    mutate(NAME = gsub(pattern = " Micro Area", "", NAME))
+    mutate(NAME = gsub(pattern = " Micro Area", "", NAME)) %>%
+    select(-metro_popM)
+  
+  st_write(acs_metros, paste0(base_filename, "_metros.gpkg"))
   
   list("places" = acs_places, 
        "counties" = acs_counties, 
@@ -150,6 +221,19 @@ get_pcit_places <- function(acs_places){
     mutate(geo_flag = "Place")
 }
 
+get_pcit_places_tigris <- function(tigris_places){
+  # This filtering is a janky way to not have to write 
+  # convert_city_acs_to_pcit better
+  tigris_places <- tigris_places %>%
+    filter(!(NAME %in% c(
+      "Islamorada, Village of Islands village, Florida",
+      "Lynchburg, Moore County metropolitan government, Tennessee"
+    ))) %>%
+    rowwise() %>%
+    mutate(pcit = convert_city_acs_to_pcit(NAMELSAD)) %>%
+    ungroup()
+}
+
 get_pcit_counties <- function(acs_counties){
   
   # This filtering is a janky way to not have to write 
@@ -171,11 +255,20 @@ get_pcit_townships <- function(acs_townships){
     mutate(geo_flag = "Township")
 }
 
+get_pcit_townships_tigris <- function(tigris_townships){
+  # This filtering is a janky way to not have to write 
+  # convert_city_acs_to_pcit better
+  tigris_townships <- tigris_townships %>%
+    rowwise() %>%
+    mutate(pcit = convert_county_acs_to_pcit(NAMELSAD)) %>%
+    ungroup()
+}
+
 
 # Filter Non-PCIT Cities ####
 # todo: Double check the population numbers from PCIT are the
 # county ones, and not the weird city-county ones
-load_acs_pcit_960 <- function(acs_places, acs_counties, acs_townships) {
+load_acs_pcit_960 <- function(acs_places, acs_counties, acs_townships, pcit_df) {
   acs_in_pcit <- acs_places %>%
     filter(pcit %in% pcit_df$proj_uid) # 920/960
 
@@ -238,7 +331,7 @@ load_acs_pcit_960 <- function(acs_places, acs_counties, acs_townships) {
 
 # Drop Error Margin Cols ####
 get_acs_estimates <- function(acs){
-  acs %<>% select(NAME,
+  acs %<>% select(GEOID, NAME,
                   ends_with("E"))
 }
 
@@ -271,7 +364,7 @@ derive_acs_static <- function(acs_year_ests){
                              yr_str_built_1960_1969E +
                              yr_str_built_1970_1979E)/yr_str_built_totE)*100,
     
-    homeownership_rate = (occupied_ownerE/housing_unitsE)*100,
+    homeownership_rate = (occupied_ownerE/occupied_unitsE)*100,
     
     housing_units_per_sqmi = (housing_unitsE/area_sqmi)
     
@@ -328,44 +421,144 @@ derive_acs_temporal_all <- function(cities){
 # Function for a single city
 process_city <- function(city, metro_areas, metro_pop_var) {
   
-  # Filter candidate metros using bounding box intersection
+  tryCatch({
+  if (st_crs(city) != st_crs(metro_areas)) {
+    city <- st_transform(city, st_crs(metro_areas))
+  }  
+    
+  city <- st_make_valid(city)
+  metro_areas <- st_make_valid(metro_areas)
+  
+
+  
   candidates <- metro_areas[st_intersects(city, metro_areas, sparse = FALSE)[1, ], ]
   
   if (nrow(candidates) == 0) {
-    return(NULL)  # No intersecting metro area
+    return(NULL)
   }
   
-  # Perform intersection to get actual overlaps
   intersections <- st_intersection(city, candidates)
   
-  # Pick the metro with the largest population (metro_popE)
   intersections <- intersections %>%
     mutate(pop = as.numeric(.data[[metro_pop_var]])) %>%
     arrange(desc(pop)) %>%
-    slice(1)  # Take the top metro area
+    slice(1)
+  
+  # Ensure geometry is a single, valid geometry
+  intersections$geometry <- st_union(intersections$geometry)
+  
+  # Defensive check
+  if (nrow(intersections) != 1) {
+    intersections <- intersections[1, ]
+  }
   
   return(intersections)
+  }, error = function(e) {
+    message("process_city() failed for a city: ", city$NAME, e$message)
+    print(city$NAME)
+    return(NULL)
+  })
 }
 
-get_metro_pops_parallel <- function(city_df, metro_areas, metro_pop_var = "metro_popE"){
-  city_list <- split(city_df, seq(nrow(city_df)))
+process_city_year <- function(city_df, metro_areas, s2use = TRUE, metro_pop_var = "metro_popE") {
   
-  handlers(global = TRUE)  # Enable handlers globally (or use in script only)
-  plan(multisession, workers=10)
+  message("Starting process_city_year()")
+  message("city_df class: ", paste(class(city_df), collapse = ", "))
+  message("metro_areas class: ", paste(class(metro_areas), collapse = ", "))
+  
+  city_df <- st_make_valid(city_df) %>% subset(!st_is_empty(.))
+  
+  message("Done with city, starting metro")
+  
+  metro_areas <- st_make_valid(metro_areas)
+  
+  message("After st_make_valid() and subset:")
+  message("city_df class: ", paste(class(city_df), collapse = ", "))
+  message("Number of cities: ", nrow(city_df))
+  
+  #city_list <- split(city_df, seq(nrow(city_df)))
+  city_list <- purrr::map(seq_len(nrow(city_df)), ~ city_df[., , drop = FALSE])
+  
+  message("Created city_list of length: ", length(city_list))
+  
+  
+  #handlers(global = TRUE)
+  plan(multisession, workers = 10)
   
   results <- with_progress({
     p <- progressor(along = city_list)
-    
     future_map(city_list, function(city) {
-      p()  # update progress bar
-      process_city(city, metro_areas = metro_areas, metro_pop_var = metro_pop_var)
+      sf::sf_use_s2(s2use)
+      p()
+      result <- process_city(city, metro_areas, metro_pop_var)
+      
+      # If first attempt fails, retry with s2 disabled
+      if (is.null(result) && s2use) {
+        sf::sf_use_s2(FALSE)
+        result <- process_city(city, metro_areas, metro_pop_var)
+        
+        # Track fallback attempt
+        id <- if ("GEOID" %in% names(city)) city$GEOID else paste0("row_", i)
+        message("Fallback to s2=FALSE for city: ", id)
+      }
+      
+      return(result)
     }) %>%
       compact() %>%
       bind_rows()
   })
   
+  results %<>% mutate(pct_metro_area_pop = (tot_popE / !!sym(metro_pop_var)) * 100)
   return(results)
 }
+
+# get_metro_pops_parallel <- function(city_list_by_year, metro_list_by_year,
+#                                     s2use = TRUE, metro_pop_var = "metro_popE") {
+#   
+#   # Ensure both inputs are named lists with matching years
+#   years <- intersect(names(city_list_by_year), names(metro_list_by_year))
+#   
+#   result <- map(years, function(yr) {
+#     message("Processing year: ", yr)
+#     process_city_year(city_list_by_year[[yr]], metro_list_by_year[[yr]],
+#                         s2use = s2use, metro_pop_var = metro_pop_var)
+#   })
+#   
+#   names(result) <- years
+#   return(result)
+# }
+
+get_metro_pops_parallel <- function(city_list_by_year, metro_list_by_year,
+                                    s2use = TRUE, metro_pop_var = "metro_popE",
+                                    cache_dir = "./data/metro_areas") {
+  
+  if (!dir_exists(cache_dir)) dir_create(cache_dir)
+  
+  years <- intersect(names(city_list_by_year), names(metro_list_by_year))
+  
+  result <- map(years, function(yr) {
+    message("Processing year: ", yr)
+    
+    cache_file <- file.path(cache_dir, paste0("map_lookup_", yr, ".gpkg"))
+    
+    if (file_exists(cache_file)) {
+      message("Loading cached GeoPackage data for year ", yr)
+      cached <- st_read(cache_file, quiet = TRUE)
+      return(cached)
+    } else {
+      message("Cache not found. Computing data for year ", yr)
+      computed <- process_city_year(city_list_by_year[[yr]], metro_list_by_year[[yr]],
+                                    s2use = s2use, metro_pop_var = metro_pop_var)
+      st_write(computed, cache_file, delete_dsn = TRUE, quiet = TRUE)
+      return(computed)
+    }
+  })
+  
+  names(result) <- years
+  return(result)
+}
+
+
 
 # load_acs_subset <- function(year, pop_cutoff) {
 #   # Checking with their own guidelines - one of these criteria:

@@ -49,3 +49,105 @@ get_kpca_df_nc <- function(kpca_rotated, city_names, n_kpcs = 3, city_choice = N
   
   return(kpca_df)
 }
+
+grid_search_kpca <- function(data, 
+                             degrees = 2:4, 
+                             scales = c(1, 2, 5), 
+                             offsets = c(1, 2, 5), 
+                             n_components = 3, 
+                             verbose = TRUE) {
+  
+  # Ensure numeric matrix input
+  mat <- data %>% select(where(is.numeric)) %>% as.matrix()
+  
+  # Create parameter grid
+  param_grid <- expand.grid(degree = degrees, scale = scales, offset = offsets)
+  
+  results <- param_grid %>% 
+    pmap(function(degree, scale, offset) {
+      tryCatch({
+        model <- kpca(mat,
+                      kernel = "polydot",
+                      kpar = list(degree = degree, scale = scale, offset = offset))
+        
+        eigvals <- model@eig
+        if (length(eigvals) == 0) stop("No eigenvalues returned.")
+        
+        # Filter small eigenvalues to avoid noise
+        eigvals <- eigvals[eigvals > 1e-6]
+        prop_var <- sum(eigvals[1:min(n_components, length(eigvals))]) / sum(eigvals)
+        
+        tibble(degree = degree, scale = scale, offset = offset,
+               variance_explained = round(prop_var, 5),
+               model = list(model))
+        
+      }, error = function(e) {
+        if (verbose) message(glue("❌ Failed for degree={degree}, scale={scale}, offset={offset}: {e$message}"))
+        NULL
+      })
+    }) %>% compact() %>% bind_rows()
+  
+  # Pick best params by variance explained
+  best_row <- results %>% arrange(desc(variance_explained)) %>% slice(1)
+  
+  if (verbose && nrow(results) > 0) {
+    cat("✅ Best parameters:\n")
+    print(best_row %>% select(degree, scale, offset))
+    cat(sprintf("✅ Variance explained by first %d PCs: %.4f\n", n_components, best_row$variance_explained))
+  }
+  
+  list(
+    best_model = if (nrow(results) > 0) best_row$model[[1]] else NULL,
+    best_params = if (nrow(results) > 0) best_row %>% select(degree, scale, offset) else NULL,
+    results_table = results %>% select(-model)
+  )
+}
+
+# grid_search_kpca_rbf <- function(data, 
+#                                  sigmas = c(0.01, 0.05, 0.1, 0.2, 0.5),
+#                                  n_components = 3,
+#                                  verbose = TRUE) {
+#   
+#   # Ensure numeric matrix input
+#   mat <- data %>% select(where(is.numeric)) %>% as.matrix()
+#   
+#   results <- map_dfr(sigmas, function(sigma) {
+#     tryCatch({
+#       model <- kpca(mat,
+#                     kernel = "rbfdot",
+#                     kpar = list(sigma = sigma))
+#       
+#       eigvals <- model@eig
+#       if (length(eigvals) == 0) stop("No eigenvalues returned.")
+#       
+#       # Filter small eigenvalues to avoid noise
+#       eigvals <- eigvals[eigvals > 1e-6]
+#       
+#       prop_var <- sum(eigvals[1:min(n_components, length(eigvals))]) / sum(eigvals)
+#       
+#       tibble(sigma = sigma,
+#              variance_explained = round(prop_var, 5),
+#              model = list(model))
+#       
+#     }, error = function(e) {
+#       if (verbose) message(glue("❌ Failed for sigma={sigma}: {e$message}"))
+#       NULL
+#     })
+#   }) %>% drop_na()
+#   
+#   # Pick best params by variance explained
+#   best_row <- results %>% arrange(desc(variance_explained)) %>% slice(1)
+#   
+#   if (verbose && nrow(results) > 0) {
+#     cat("✅ Best sigma:\n")
+#     print(best_row %>% select(sigma))
+#     cat(sprintf("✅ Variance explained by first %d PCs: %.4f\n", 
+#                 n_components, best_row$variance_explained))
+#   }
+#   
+#   list(
+#     best_model = if (nrow(results) > 0) best_row$model[[1]] else NULL,
+#     best_sigma = if (nrow(results) > 0) best_row$sigma else NULL,
+#     results_table = results %>% select(-model)
+#   )
+# }
