@@ -455,31 +455,37 @@ my_city$cluster_members$kpca_rbf <- data$reduced$kpca$six_vars %>% filter(cluste
 peers$kpca_rbf <- my_city$cluster_members$kpca_rbf %>% add_distance_to_chosen(city_col = "name") %>% select(name, distance_to_chosen)
 
 ## kPCA-Space (poly) ####
-my_city$row$kpca_poly <- data$reduced$kpca$six_vars %>% filter(name == city_choice)
+my_city$row$kpca_poly <- data$reduced$kpca_poly$six_vars %>% filter(NAME == city_choice)
 my_city$cluster_assn$kpca_poly <- my_city$row$kpca_poly %>% pull(cluster)
-my_city$cluster_members$kpca_poly <- data$reduced$kpca$six_vars %>% filter(cluster == my_city$cluster_assn$kpca_poly)
-peers$kpca_poly <- my_city$cluster_members$kpca_poly %>% add_distance_to_chosen(city_col = "name") %>% select(name, distance_to_chosen)
+my_city$cluster_members$kpca_poly <- data$reduced$kpca_poly$six_vars %>% filter(cluster == my_city$cluster_assn$kpca_poly)
+peers$kpca_poly <- my_city$cluster_members$kpca_poly %>% add_distance_to_chosen(city_col = "NAME") %>% select(NAME, distance_to_chosen)
 
 # ## Combining Lists ####
 top_n_of_ea <- 55
 intersect_3 <- Reduce(intersect, list(
   head(dplyr::arrange(peers$pca, distance_to_chosen)$name, top_n_of_ea),
   head(dplyr::arrange(peers$kpca_rbf, distance_to_chosen)$name, top_n_of_ea),
-  head(dplyr::arrange(peers$kpca_poly, distance_to_chosen)$name, top_n_of_ea)
+  head(dplyr::arrange(peers$kpca_poly, distance_to_chosen)$NAME, top_n_of_ea)
 ))
 intersect_3
+
+dir.create("./data/out")
+write_csv(peers$pca %>% arrange(distance_to_chosen), "./data/out/peers_pca.csv")
+write_csv(peers$kpca_rbf %>% arrange(distance_to_chosen), "./data/out/peers_kpca_rbf.csv")
+write_csv(peers$kpca_poly %>% arrange(distance_to_chosen), "./data/out/peers_kpca_poly.csv")
 
 # ========================================================================= #
 # RUN APP =========== ####
 # You need to set your_streamlit_path to the absolute path of your installation of streamlit
-# source("./scripts/streamlit.R")
-# py_require("streamlit")
-# py_run_string("
-# import os
-# import streamlit
-# 
-# os.system('streamlit run r_plot_streamlit.py')
-# ")
+source("./scripts/streamlit.R")
+py_require("streamlit")
+py_require("pandas")
+py_run_string("
+import os
+import streamlit
+
+os.system('streamlit run ./scripts/r_plot_streamlit.py')
+")
 
 
 
