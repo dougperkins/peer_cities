@@ -36,7 +36,7 @@ plot_clustering <- function(pca_df){
 #   p %>% layout(title = "3d PCA Plot with Highlight")
 # }
 
-plot_pca_3d <- function(city_choice, pca_out, clusters, city_names, save_path = NULL) {
+plot_pca_3d <- function(city_choice, pca_out, clusters, city_names, save_dir = NULL) {
   # Prepare data
   pca_3d <- tibble(
     pc1 = pca_out$pc1,
@@ -66,8 +66,11 @@ plot_pca_3d <- function(city_choice, pca_out, clusters, city_names, save_path = 
   # Print to RStudio Viewer
   print(p)
   
+  dir.create(save_dir, recursive = TRUE, showWarnings = FALSE)
+  save_path <- file.path(save_dir, "pca_best_3d.html")
+  
   # Save to HTML if a path is provided
-  if (!is.null(save_path)) {
+  if (!is.null(save_dir)) {
     saveWidget(p, file = save_path, selfcontained = TRUE)
     message("Plot saved to: ", save_path)
   }
@@ -114,6 +117,8 @@ plot_pca_3d <- function(city_choice, pca_out, clusters, city_names, save_path = 
 #            col = cluster_colors, pch = 16, cex = 1)
 # }
 
+# Generates spinning 3d plot of dimension-reduced space.
+# If points aren't plotting, update GPU drivers.
 make_pca_3d_gif <- function(city_choice, pca_out, clusters, city_names, gif_dir) {
   # Load required packages
   if (!requireNamespace("rgl", quietly = TRUE)) stop("Package 'rgl' is required.")
@@ -141,8 +146,18 @@ make_pca_3d_gif <- function(city_choice, pca_out, clusters, city_names, gif_dir)
   pca_3d$size <- ifelse(pca_3d$highlight == "highlight", 5, 2)
   pca_3d$color[pca_3d$highlight == "highlight"] <- "yellow"
   
+  # print(head(pca_3d))
+  # cat("nrow(df):", nrow(pca_3d), "\n")
+  # summary(pca_3d)
+  # table(pca_3d$color, useNA = "always")
+  
   # Open RGL device
   #rgl.useNULL(FALSE)
+  #options(rgl.useNULL = FALSE)
+  # options(rgl.printRglwidget = TRUE)
+  # rglwidget(minimal =
+  #             FALSE) 
+  
   open3d()
   plot3d(
     x = pca_3d$pc1,
@@ -153,6 +168,9 @@ make_pca_3d_gif <- function(city_choice, pca_out, clusters, city_names, gif_dir)
     type = "s",
     xlab = "PC1", ylab = "PC2", zlab = "PC3"
   )
+  
+  
+  
   
   # Optional: Add legend
   legend3d("topright", legend = levels(pca_3d$cluster),

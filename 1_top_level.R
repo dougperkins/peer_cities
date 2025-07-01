@@ -21,7 +21,8 @@ p_load(
   caret, GGally,
   zeallot, lwgeom,
   rmapshaper, testthat,
-  fs, htmltools
+  fs, htmltools,
+  gifski, webshot
 )
 
 # Global settings
@@ -385,11 +386,11 @@ plot_pca_3d(city_choice = city_choice,
             pca_out = data$reduced$pca$six_vars, 
             clusters = clust$best$pca$assn, 
             city_names, 
-            save_path = "./html/pca_best_3d.html")
+            save_dir = "./html")
 
 make_pca_3d_gif(city_choice = city_choice,
                 pca_out = data$reduced$pca$six_vars,
-                clusters = clust$pca$hc$assn,
+                clusters = clust$best$pca$assn,
                 city_names = city_names,
                 gif_dir = "./gifs/pca")
 
