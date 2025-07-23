@@ -28,6 +28,29 @@ get_peers <- function(data, chosen_city = NULL, city_col = "City") {
   return(peers)
 }
 
+find_shared_peers <- function(n, dim_reduction_methods, peers_list) {
+  k <- n
+  repeat {
+    # Get top-k cities from each dimension reduction method
+    top_cities_lists <- lapply(dim_reduction_methods, function(method) {
+      head(dplyr::arrange(peers_list[[method]], Dissimilarity)$City, k)
+    })
+    
+    # Find intersection across all methods
+    shared_cities <- Reduce(intersect, top_cities_lists)
+    
+    if (length(shared_cities) >= n) {
+      return(head(shared_cities, n))
+    }
+    
+    # If not enough shared cities, increase k and try again
+    k <- k + 1
+    
+    # Optional: add a safeguard to prevent infinite loops
+    if (k > 100) stop("Could not find enough shared cities within 100 top entries.")
+  }
+}
+
 add_distance_to_chosen <- function(df, city_col = "city", reference_city = "Somerville city, Massachusetts") {
   # Identify numeric columns
   numeric_cols <- df %>%
@@ -51,6 +74,21 @@ add_distance_to_chosen <- function(df, city_col = "city", reference_city = "Some
   
   return(df)
 }
+
+write_peer_csvs <- function(methods){
+  for (method in methods) {
+    write_csv(peers[[method]] %>% arrange(Dissimilarity),
+              paste0("./data/out/peers_", method, ".csv"))
+  }
+}
+
+write_data_csvs <- function(methods){
+  for (method in methods) {
+    write_csv(data$reduced[[method]]$six_vars,
+              paste0("./data/out/data_", method, ".csv"))
+  }
+}
+
 
 get_similar_cities <- function(cities, chosen_city, weight) {
   # Input validation

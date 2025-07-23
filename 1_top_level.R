@@ -413,14 +413,16 @@ peers <- get_peers(data = data, chosen_city = "Jersey City city, New Jersey")
 
 
 # ## Combining Lists ####
-top_n_of_ea <- 55
-intersect_3 <- Reduce(intersect, list(
-  head(dplyr::arrange(peers$pca, Dissimilarity)$City, top_n_of_ea),
-  head(dplyr::arrange(peers$kpca_rbf, Dissimilarity)$City, top_n_of_ea),
-  head(dplyr::arrange(peers$kpca_poly, Dissimilarity)$City, top_n_of_ea),
-  head(dplyr::arrange(peers$umap, Dissimilarity)$City, top_n_of_ea)
-))
-intersect_3
+# top_n_of_ea <- 55
+# intersect_3 <- Reduce(intersect, list(
+#   head(dplyr::arrange(peers$pca, Dissimilarity)$City, top_n_of_ea),
+#   head(dplyr::arrange(peers$kpca_rbf, Dissimilarity)$City, top_n_of_ea),
+#   head(dplyr::arrange(peers$kpca_poly, Dissimilarity)$City, top_n_of_ea),
+#   head(dplyr::arrange(peers$umap, Dissimilarity)$City, top_n_of_ea)
+# ))
+# intersect_3
+
+top_n <- find_shared_peers(10, c("pca", "kpca_rbf", "kpca_poly", "umap"), peers)
 
 detach("package:fpc", unload = TRUE, character.only = TRUE)
 detach("package:mclust", unload = TRUE, character.only = TRUE)
@@ -429,22 +431,25 @@ dissimilarities <- combine_similarity_rankings(peers,
                             method_names = c("pca", "kpca_rbf", "kpca_poly", "umap"), 
                             agg_method = "mean")
 
+
+
 # Roughly what the final table should be, but somehow condense the full info?
 # Also tables are a bad way for this to be presented.
 #View(data$pcit$all_geogs_six_vars$`2023` %>% select(-GEOID) %>% filter(NAME %in% intersect_3))
 
 dir.create("./data/out")
-write_csv(peers$pca %>% arrange(Dissimilarity), "./data/out/peers_pca.csv")
-write_csv(peers$kpca_rbf %>% arrange(Dissimilarity), "./data/out/peers_kpca_rbf.csv")
-write_csv(peers$kpca_poly %>% arrange(Dissimilarity), "./data/out/peers_kpca_poly.csv")
-write_csv(peers$umap %>% arrange(Dissimilarity), "./data/out/peers_umap.csv")
+write_peer_csvs(c("pca", "kpca_rbf", "kpca_poly", "umap"))
+# write_csv(peers$pca %>% arrange(Dissimilarity), "./data/out/peers_pca.csv")
+# write_csv(peers$kpca_rbf %>% arrange(Dissimilarity), "./data/out/peers_kpca_rbf.csv")
+# write_csv(peers$kpca_poly %>% arrange(Dissimilarity), "./data/out/peers_kpca_poly.csv")
+# write_csv(peers$umap %>% arrange(Dissimilarity), "./data/out/peers_umap.csv")
 write_csv(dissimilarities %>% arrange(Aggregated), "./data/out/dissim.csv")
 
-write_csv(data$reduced$pca$six_vars, "./data/out/data_pca.csv")
-write_csv(data$reduced$kpca_rbf$six_vars, "./data/out/data_kpca_rbf.csv")
-write_csv(data$reduced$kpca_poly$six_vars, "./data/out/data_kpca_poly.csv")
-write_csv(data$reduced$umap$six_vars, "./data/out/data_umap.csv")
-
+write_data_csvs(c("pca", "kpca_rbf", "kpca_poly", "umap"))
+# write_csv(data$reduced$pca$six_vars, "./data/out/data_pca.csv")
+# write_csv(data$reduced$kpca_rbf$six_vars, "./data/out/data_kpca_rbf.csv")
+# write_csv(data$reduced$kpca_poly$six_vars, "./data/out/data_kpca_poly.csv")
+# write_csv(data$reduced$umap$six_vars, "./data/out/data_umap.csv")
 
 # ========================================================================= #
 # RUN APP =========== ####
@@ -453,6 +458,7 @@ source("./scripts/streamlit.R")
 py_require("streamlit")
 py_require("pandas")
 py_require("plotly")
+py_require("scipy")
 py_run_string("
 import os
 import streamlit

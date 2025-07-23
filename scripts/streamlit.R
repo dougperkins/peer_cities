@@ -2,7 +2,12 @@
 writeLines("
 import streamlit as st
 import pandas as pd
+import numpy as np
 from pca_plot import *
+from peers import *
+import glob
+import os
+
 
 data_paths = {
     'PCA': './data/out/data_pca.csv',
@@ -17,6 +22,8 @@ data = {
     'kPCA (Poly)': pd.read_csv(data_paths['kPCA (Poly)']),
     'UMAP': pd.read_csv(data_paths['UMAP'])
 }
+
+data_for_tbls = load_reduced_data()
 
 #st.set_page_config(layout='wide')
 st.set_page_config(page_title='Peer City Discovery Tool')
@@ -61,20 +68,45 @@ city_choice = st.selectbox(
 
 # st.image('./gifs/pca/3d_spin_z.gif')
 
-tables = {
-    'Overall': pd.read_csv('./data/out/dissim.csv'),
-    'PCA': pd.read_csv('./data/out/peers_pca.csv'),
-    'kPCA (RBF)': pd.read_csv('./data/out/peers_kpca_rbf.csv'),
-    'kPCA (Poly)': pd.read_csv('./data/out/peers_kpca_poly.csv'),
-    'UMAP': pd.read_csv('./data/out/peers_umap.csv')
-}
+# OLD TABLE:
+# tables = {
+#     'Overall': pd.read_csv('./data/out/dissim.csv'),
+#     'PCA': pd.read_csv('./data/out/peers_pca.csv'),
+#     'kPCA (RBF)': pd.read_csv('./data/out/peers_kpca_rbf.csv'),
+#     'kPCA (Poly)': pd.read_csv('./data/out/peers_kpca_poly.csv'),
+#     'UMAP': pd.read_csv('./data/out/peers_umap.csv')
+# }
+# 
+# tab_list = st.tabs(list(tables.keys()))
+# 
+# for i, key in enumerate(tables.keys()):
+#     with tab_list[i]:
+#         st.subheader(key)
+#         st.dataframe(tables[key])
+        
+if city_choice:
+    peers = get_peers(data_for_tbls, city_choice)
 
-tab_list = st.tabs(list(tables.keys()))
+    if not peers:
+        st.warning('No peers found for city.')
+    else:
+        # Combine similarity rankings
+        aggregated_df = combine_similarity_rankings(peers, agg_method='mean')
 
-for i, key in enumerate(tables.keys()):
-    with tab_list[i]:
-        st.subheader(key)
-        st.dataframe(tables[key])
+        # Create tabs
+        all_tabs = ['aggregated'] + list(peers.keys())
+        tabs = st.tabs(all_tabs)
+        
+        # Aggregated tab first
+        with tabs[0]:
+            st.write(f'**Aggregated dissimilarity (z-scored & averaged)** for `{city_choice}`:')
+            st.dataframe(aggregated_df[[ 'City', 'Aggregated' ]])
+        
+        # Then each method
+        for i, method in enumerate(peers, start=1):
+            with tabs[i]:
+                st.write(f'Peers for `{city_choice}` using **{method.upper()}**:')
+                st.dataframe(peers[method])
         
 # col1, col2 = st.columns(2)
 
