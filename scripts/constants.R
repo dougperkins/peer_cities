@@ -150,7 +150,7 @@ acs_vars_housing <- c(
     occupied_units = "B25002_002", # occupancy status?
     vacant_units = "B25002_003", # occupancy status?
     housing_units = "B25001_001", # (housing units)
-     
+    
     ### Gross Rent as % Income ####
     rent_percent_tot = "B25070_001",
     rent_percent_0_9p9 = "B25070_002", # last 12mo (pct household income)

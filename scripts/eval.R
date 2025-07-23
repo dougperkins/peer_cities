@@ -1,3 +1,20 @@
+# Outer Functions ####
+compare_clusterings <- function(data_reduced, clusterings, evals, subset_name = "six_vars") {
+  best_results <- list()
+  
+  for (dr in names(data_reduced)) {
+    df <- data_reduced[[dr]][[subset_name]]
+    clusterings_for_dr <- clusterings[[dr]]
+    
+    result <- compare_clusterings_majority_vote(df, clusterings_for_dr, evals)
+    
+    best_results[[dr]] <- result
+  }
+  
+  return(best_results)
+}
+
+# Inner Functions ####
 compare_clusterings_majority_vote <- function(data, clusterings, indices) {
   
   # Summary functions for indices that return vectors
@@ -25,6 +42,8 @@ compare_clusterings_majority_vote <- function(data, clusterings, indices) {
     # Within cluster sum of squares (k-means style)
     "within.cluster.ss"  = identity
   )
+  
+  message("Pre Eval")
   
   # Run cluster.stats for each clustering, store results
   evals <- lapply(clusterings, function(clust_assn) {

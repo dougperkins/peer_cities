@@ -39,9 +39,9 @@ plot_clustering <- function(pca_df){
 plot_pca_3d <- function(city_choice, pca_out, clusters, city_names, save_dir = NULL) {
   # Prepare data
   pca_3d <- tibble(
-    pc1 = pca_out$pc1,
-    pc2 = pca_out$pc2,
-    pc3 = pca_out$pc3,
+    pc1 = pca_out$C1,
+    pc2 = pca_out$C2,
+    pc3 = pca_out$C3,
     label = city_names,
     cluster = as.factor(clusters)
   ) %>%
@@ -130,9 +130,9 @@ make_pca_3d_gif <- function(city_choice, pca_out, clusters, city_names, gif_dir)
   
   # Prepare data
   pca_3d <- data.frame(
-    pc1 = pca_out$pc1,
-    pc2 = pca_out$pc2,
-    pc3 = pca_out$pc3,
+    pc1 = pca_out$C1,
+    pc2 = pca_out$C2,
+    pc3 = pca_out$C3,
     label = city_names,
     cluster = as.factor(clusters)
   )
@@ -242,7 +242,7 @@ make_pca_3d_gif <- function(city_choice, pca_out, clusters, city_names, gif_dir)
 # }
 
 plot_kpca_3d <- function(df,
-                         pc_cols = c("kp1", "kp2", "kp3"),
+                         pc_cols = c("C1", "C2", "C3"),
                          cluster_col = "cluster",
                          text_col = "NAME",
                          highlight_col = "highlight",
@@ -300,7 +300,7 @@ plot_kpca_3d <- function(df,
 }
 
 make_kpca_3d_gif <- function(df,
-                             pc_cols = c("kp1", "kp2", "kp3"),
+                             pc_cols = c("C1", "C2", "C3"),
                              cluster_col = "cluster",
                              text_col = "NAME",
                              highlight_col = "highlight",
@@ -388,7 +388,7 @@ make_kpca_3d_gif <- function(df,
 }
 
 
-add_highlight <- function(df, name_col = "NAME", city_choice){
+add_highlight <- function(df, name_col = "City", city_choice){
   col_sym <- sym(name_col)
   
   df %<>%

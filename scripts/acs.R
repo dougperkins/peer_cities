@@ -207,7 +207,6 @@ load_or_dl_one_acs_5y_housing <- function(vars, vars_metro, year) {
 # Get PCIT City Names ####
 # They're formatted differently (ie boisecity_ID)
 get_pcit_places <- function(acs_places){
-  
   # This filtering is a janky way to not have to write 
   # convert_city_acs_to_pcit better
   acs_places <- acs_places %>%

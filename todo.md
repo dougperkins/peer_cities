@@ -9,6 +9,8 @@ This is the ground truth of things to do at a granular level, as opposed to leav
   - [ ] Function structure
     
     - [ ] All functions should have data, not some data/.../... as parameter? Or is this less clear
+    - [ ] inner functions: "runner"
+    - [ ] outer functions: name by what they do / interfaces. use map().
   
   - [ ] Improve hacky solutions
     
@@ -20,23 +22,37 @@ This is the ground truth of things to do at a granular level, as opposed to leav
     
     - [ ] Years and variables should be inputs to a function that runs the whole thing, should not have data-sixvar and data-allvars the whole time, just input allvars or sixvar into the first function
     
-    - [ ] dimension reduction methods drlist <- function("dr1", "dr2")
+    - [x] dimension reduction methods drlist <- function("dr1", "dr2")
     
     - [ ] distance matrices dists <- function("", "")
   
   - [ ] top_level leave very abstracted
   
-  - [ ] flexible years, dim red methods, cluster methods, 
+  - [ ] flexible years, 
+  
+  - [ ] flexible dim red methods
+    
+    - [x] baseline flexibility
+    
+    - [ ] grid search wrapper? or write each one
+  
+  - [ ] flexible cluster methods
+    
+    - [x]  baseline flexibility
+    
+    - [ ] custom index eval function to replace NbClust()
+    
+    - [ ] better vote/selection method for best clustering across all indices
   
   - [ ] namespace
     
-    - [ ] fips
+    - [x] fips
       
-      - [ ] places
+      - [x] places
       
-      - [ ] state
+      - [x] state
       
-      - [ ] state_rows
+      - [x] state_rows
     
     - [ ] feats
     
@@ -44,19 +60,19 @@ This is the ground truth of things to do at a granular level, as opposed to leav
     
     - [ ] variables
     
-    - [ ] data
+    - [x] data
       
       - [ ] structure data - source - year or data - year - source? Either way, should only use one system rather than a weird mix of both
       
       - [ ] different organization within
     
-    - [ ] cluster
+    - [x] cluster
       
-      - [ ] nclust
+      - [x] nclust
       
-      - [ ] assignments
+      - [x] assignments
     
-    - [ ] peers
+    - [x] peers
 
 - [ ] **Loading Data**
   
@@ -120,7 +136,7 @@ This is the ground truth of things to do at a granular level, as opposed to leav
   
   - [ ] Log-transform variables?
   
-  - [ ] Use several dimension reduction techniques
+  - [x] Use several dimension reduction techniques
   
   - [ ] PCA prior to other DR?
 
@@ -138,17 +154,17 @@ This is the ground truth of things to do at a granular level, as opposed to leav
   
   - [ ] DR plots
     
-    - [ ] Interactive (hover to see city, chosen city always shown)
+    - [x] Interactive (hover to see city, chosen city always shown)
     
     - [ ] 2d
     
-    - [ ] 3d
+    - [x] 3d
     
-    - [ ] Tabs to see different DR 
+    - [ ] (Adv) Tabs to see different DR 
     
-    - [ ] Tabs to see if clustering on low-var PCs, option to try those if needed.
+    - [ ] (Adv) Tabs to see if clustering on low-var PCs, option to try those if needed.
     
-    - [ ] Color by cluster
+    - [x] Color by cluster
     
     - [ ] Static clustering animated changing over time points
   

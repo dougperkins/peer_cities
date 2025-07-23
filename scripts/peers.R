@@ -1,3 +1,33 @@
+get_peers <- function(data, chosen_city = NULL, city_col = "City") {
+  if (is.null(chosen_city)) stop("Please specify a city")
+  
+  my_city <- list()
+  peers <- list()
+  
+  # Loop over all dimensionality reduction methods in data$reduced
+  for (method in names(data$reduced)) {
+    # Access the reduced data frame
+    reduced_df <- data$reduced[[method]]$six_vars
+    
+    # Find the row for the selected city
+    my_city$row[[method]] <- reduced_df %>% filter(.data[[city_col]] == chosen_city)
+    
+    # Extract cluster assignment
+    my_city$cluster_assn[[method]] <- my_city$row[[method]] %>% pull(cluster)
+    
+    # Get all members in the same cluster
+    my_city$cluster_members[[method]] <- reduced_df %>%
+      filter(cluster == my_city$cluster_assn[[method]])
+    
+    # Get peers with dissimilarity
+    peers[[method]] <- my_city$cluster_members[[method]] %>%
+      add_distance_to_chosen(city_col = city_col, reference_city = chosen_city) %>%
+      select({{ city_col }}, Dissimilarity)
+  }
+  
+  return(peers)
+}
+
 add_distance_to_chosen <- function(df, city_col = "city", reference_city = "Somerville city, Massachusetts") {
   # Identify numeric columns
   numeric_cols <- df %>%
@@ -15,7 +45,7 @@ add_distance_to_chosen <- function(df, city_col = "city", reference_city = "Some
   df <- df %>%
     rowwise() %>%
     mutate(
-      distance_to_chosen = sqrt(sum((c_across(all_of(numeric_cols)) - chosen_city_vec)^2))
+      Dissimilarity = sqrt(sum((c_across(all_of(numeric_cols)) - chosen_city_vec)^2))
     ) %>%
     ungroup()
   
@@ -184,3 +214,39 @@ get_peers_iterative <- function(cities, chosen_city, weight, ...) {
   return(common_cities)
 }
 
+combine_similarity_rankings <- function(peers_df_list, method_names = NULL, agg_method = "mean") {
+  method_names <- names(peers_df_list)
+  
+  # Check structure of each peer df
+  for (method in method_names) {
+    df <- peers_df_list[[method]]
+    if (!("City" %in% names(df)) || !("Dissimilarity" %in% names(df))) {
+      stop(glue::glue("Each peers${method} must have columns 'City' and 'Dissimilarity'"))
+    }
+  }
+  
+  # Normalize each Distance column using z-score standardization (scale)
+  norm_dfs <- map(method_names, function(method) {
+    df <- peers_df_list[[method]]
+    scaled_dist <- as.numeric(scale(df$Dissimilarity))  # scale returns matrix
+    tibble(City = df$City, !!method := scaled_dist)
+  })
+  
+  # Merge on City
+  combined <- reduce(norm_dfs, full_join, by = "City")
+  
+  # Aggregate across methods
+  combined <- combined %>%
+    rowwise() %>%
+    mutate(
+      Aggregated = case_when(
+        agg_method == "mean" ~ mean(c_across(all_of(method_names)), na.rm = TRUE),
+        agg_method == "median" ~ median(c_across(all_of(method_names)), na.rm = TRUE),
+        TRUE ~ NA_real_
+      )
+    ) %>%
+    ungroup() %>%
+    arrange(Aggregated)
+  
+  return(combined)
+}

@@ -28,7 +28,7 @@ convert_city_acs_to_pcit <- function(city_acs, county=FALSE){
   #browser()
   # Make lowercase
   city_acs <- tolower(city_acs)
-  print("start")
+  #print("start")
   if (county == FALSE){
     # Remove suffixes
     city_acs <- gsub(" (city|town|township|municipality|village|cdp|borough|comunidad|urbana),", ",", city_acs)
@@ -41,8 +41,9 @@ convert_city_acs_to_pcit <- function(city_acs, county=FALSE){
   parts <- strsplit(city_acs, ",\\s*")[[1]]
   city <- gsub(" ", "", parts[1])  # Remove spaces
   state_full <- str_to_title(parts[2])
-  print(city)
-  print(state_full)
+  cat(paste0(city, ", ", blue(state_full), " converted to PCIT name format"))
+  #print(city)
+  #print(state_full)
   if (state_full == "Moore County Metropolitan Government; Tennessee"){
     state_full <- "Tennessee"
   }
@@ -261,6 +262,8 @@ load_acs_data_by_year <- function(years, variable_list, vars_metro) {
     .f = ~ load_or_dl_one_acs_5y_housing(year = .y, vars = .x, vars_metro = vars_metro)
   )
 }
+
+
 
 get_pcit_places_list_in <- function(list_of_lists_years_geog_dfs){
   df_list <- map(list_of_lists_years_geog_dfs, function(year_list_of_geog_dfs){get_pcit_places(year_list_of_geog_dfs[[1]])})
