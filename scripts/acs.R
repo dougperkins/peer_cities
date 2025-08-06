@@ -115,93 +115,370 @@ load_acs_metro_areas <- function(vars, year){
 # Error : A state must be specified for this year/dataset combination.
 
 
-load_or_dl_one_acs_5y_housing <- function(vars, vars_metro, year) {
+# load_or_dl_one_acs_5y_housing <- function(vars, vars_metro, year) {
+#   message("Processing ACS data for ", year)
+#   dir.create("./data/acs", showWarnings = FALSE, recursive = TRUE)
+# 
+#   base_filename <- paste0("./data/acs/acs_5y_housing_", year)
+#   files_exist <- all(file.exists(paste0(base_filename, "_places.csv"),
+#                                  paste0(base_filename, "_counties.csv"),
+#                                  paste0(base_filename, "_townships.csv"),
+#                                  paste0(base_filename, "_metros.gpkg")))
+# 
+#   if (files_exist) {
+#     message("Loading cached ACS data for ", year)
+# 
+#     acs_places <- readr::read_csv(paste0(base_filename, "_places.csv"), show_col_types = FALSE)
+#     acs_counties <- readr::read_csv(paste0(base_filename, "_counties.csv"), show_col_types = FALSE)
+#     acs_townships <- readr::read_csv(paste0(base_filename, "_townships.csv"), show_col_types = FALSE)
+#     acs_metros <- st_read(paste0(base_filename, "_metros.gpkg"))
+# 
+#     return(list("places" = acs_places,
+#                 "counties" = acs_counties,
+#                 "townships" = acs_townships,
+#                 "metros" = acs_metros))
+#   }
+# 
+#   message("Downloading ACS data for ", year)
+# 
+#   #geom <- if (as.numeric(year) >= 2019) TRUE else FALSE
+#   # We may not need geoms from here ever - can't get some for older years,
+#   # can always get them from tigris, although there's the weird error
+#   # with some city/metro geometries when trying to match metro areas to cities.
+#   geom <- FALSE
+# 
+#   acs_places <- get_acs(
+#     geography = "place",
+#     variables = vars,
+#     year = as.numeric(year),
+#     survey = "acs5",
+#     output = "wide",
+#     geometry = geom
+#   )
+# 
+#   readr::write_csv(acs_places, paste0(base_filename, "_places.csv"))
+# 
+#   acs_counties <- get_acs(
+#     geography = "county",
+#     variables = vars,
+#     year = as.numeric(year),
+#     survey = "acs5",
+#     output = "wide",
+#     geometry = geom
+#   )
+# 
+#   readr::write_csv(acs_counties, paste0(base_filename, "_counties.csv"))
+# 
+#   acs_townships <- get_acs(
+#     geography = "county subdivision",
+#     state = "NJ",
+#     variables = vars,
+#     year = as.numeric(year),
+#     survey = "acs5",
+#     output = "wide",
+#     geometry = geom
+#   )
+# 
+#   acs_townships %<>%
+#     mutate(GEOID = as.character(GEOID))
+# 
+#   readr::write_csv(acs_townships, paste0(base_filename, "_townships.csv"))
+# 
+#   acs_metros <- get_acs(
+#     geography = "metropolitan statistical area/micropolitan statistical area",
+#     variables = vars_metro,  # total population only, for now
+#     survey = "acs5",           # or "acs5"
+#     year = as.numeric(year),    # most recent available
+#     output = "wide",
+#     geometry = TRUE
+#   ) %>%
+#     mutate(NAME = gsub(pattern = " Metro Area", "", NAME)) %>%
+#     mutate(NAME = gsub(pattern = " Micro Area", "", NAME)) %>%
+#     select(-metro_popM)
+# 
+#   st_write(acs_metros, paste0(base_filename, "_metros.gpkg"))
+# 
+#   list("places" = acs_places,
+#        "counties" = acs_counties,
+#        "townships" = acs_townships,
+#        "metros" = acs_metros)
+# }
+
+# load_or_dl_one_acs_5y_housing <- function(year, vars, vars_metro) {
+#   message("Processing ACS data for ", year)
+#   base_filename <- paste0("./data/acs/acs_5y_housing_", year)
+#   dir.create("./data/acs", showWarnings = FALSE, recursive = TRUE)
+#   
+#   # Helper to check or update CSV data for a geography
+#   check_or_update_csv <- function(geo, geo_name, vars_needed, state = NULL) {
+#     csv_file <- paste0(base_filename, "_", geo_name, ".csv")
+#     df <- NULL
+#     if (file.exists(csv_file)) {
+#       message("Reading existing data for ", geo_name)
+#       df <- readr::read_csv(
+#         csv_file,
+#         show_col_types = FALSE,
+#         col_types = readr::cols(GEOID = readr::col_character())
+#       )
+#       
+#       # Determine which vars are missing (checking both E and M suffixes)
+#       present_vars <- gsub("[EM]$", "", grep("E$|M$", colnames(df), value = TRUE))
+#       missing_names <- setdiff(names(vars_needed), present_vars)
+#       
+#       if (length(missing_names) == 0) {
+#         message("All variables present for ", geo_name)
+#         # Return only requested columns plus GEOID and NAME, no save needed
+#         expected_cols <- c("GEOID", "NAME",
+#                            unlist(purrr::imap(vars_needed, function(code, name) {
+#                              c(paste0(name, "E"), paste0(name, "M"))
+#                            })))
+#         names(expected_cols) <- NULL
+#         print(expected_cols)
+#         df_selected <- df %>% dplyr::select(dplyr::any_of(expected_cols))
+#         return(df_selected)
+#       } else {
+#         message("Downloading missing variables for ", geo_name, ": ", paste(missing_names, collapse = ", "))
+#         # Prepare variable codes for API call for missing vars
+#         missing_vars_codes <- vars_needed[missing_names]
+#         
+#         acs_new <- get_acs(
+#           geography = geo,
+#           variables = missing_vars_codes,
+#           year = as.numeric(year),
+#           survey = "acs5",
+#           output = "wide",
+#           geometry = FALSE,
+#           state = state
+#         )
+#         
+#         print(colnames(acs_new))
+#         
+#         # message(paste0("vars_needed values: ", vars_needed[1:2], ", and vars_needed names: ", names(vars_needed)[1:2]))
+#         # 
+#         # # Rename new columns from codes (e.g. B25077_001E) to friendly names (e.g. median_home_valueE)
+#         # col_rename <- purrr::imap(vars_needed[missing_names], function(code, name) {
+#         #   old_cols <- c(paste0(code, "E"), paste0(code, "M"))
+#         #   new_cols <- c(paste0(name, "E"), paste0(name, "M"))
+#         #   set_names(new_cols, old_cols)
+#         # }) %>% purrr::reduce(c)
+#         # 
+#         # message(paste0("col_rename: ", col_rename[1:2], ", and names: ", names(col_rename)[1:2]))
+#         # 
+#         # acs_new <- dplyr::rename_with(acs_new, ~ col_rename[.x], .cols = names(col_rename))
+#         
+#         # Join new data to existing
+#         df <- dplyr::left_join(
+#           df,
+#           acs_new %>% dplyr::select(GEOID, dplyr::any_of(colnames(acs_new))),
+#           by = "GEOID"
+#         )
+#         # Save updated CSV with all columns
+#         readr::write_csv(df, csv_file)
+#         return(df)
+#       }
+#     } else {
+#       message("Downloading ACS data for ", geo_name)
+#       acs <- get_acs(
+#         geography = geo,
+#         variables = vars_needed,
+#         year = as.numeric(year),
+#         survey = "acs5",
+#         output = "wide",
+#         geometry = FALSE,
+#         state = state
+#       )
+#       
+#       # # Rename columns from codes to friendly names
+#       # col_rename <- purrr::imap(vars_needed, function(code, name) {
+#       #   vals <- c(paste0(code, "E"), paste0(code, "M"))
+#       #   nm <- c(paste0(name, "E"), paste0(name, "M"))
+#       #   set_names(vals, nm)
+#       # }) %>% unlist()
+#       # 
+#       # acs <- dplyr::rename_with(acs, ~ col_rename[.x], .cols = names(col_rename))
+#       
+#       readr::write_csv(acs, csv_file)
+#       return(acs)
+#     }
+#   }
+#   
+#   # Process places, counties, townships, metros
+#   places <- check_or_update_csv("place", "places", vars)
+#   counties <- check_or_update_csv("county", "counties", vars)
+#   townships <- check_or_update_csv("county subdivision", "townships", vars, state = "NJ")
+#   
+#   message("Downloading metro data for ", year)
+#   acs_metros <- get_acs(
+#     geography = "metropolitan statistical area/micropolitan statistical area",
+#     variables = vars_metro,
+#     survey = "acs5",
+#     year = as.numeric(year),
+#     output = "wide",
+#     geometry = TRUE
+#   ) %>%
+#     dplyr::mutate(NAME = gsub(" Metro Area", "", NAME),
+#                   NAME = gsub(" Micro Area", "", NAME)) %>%
+#     dplyr::select(-dplyr::matches("_M$"))  # remove margin of error columns for metro for simplicity
+#   
+#   sf::st_write(acs_metros, paste0(base_filename, "_metros.gpkg"), delete_dsn = TRUE)
+#   
+#   list(
+#     places = places,
+#     counties = counties,
+#     townships = townships,
+#     metros = acs_metros
+#   )
+# }
+
+load_or_dl_one_acs_5y_housing <- function(year, vars, vars_metro) {
   message("Processing ACS data for ", year)
-  dir.create("./data/acs", showWarnings = FALSE, recursive = TRUE)
-  
   base_filename <- paste0("./data/acs/acs_5y_housing_", year)
-  files_exist <- all(file.exists(paste0(base_filename, "_places.csv"),
-                                 paste0(base_filename, "_counties.csv"),
-                                 paste0(base_filename, "_townships.csv"),
-                                 paste0(base_filename, "_metros.gpkg")))
-  
-  if (files_exist) {
-    message("Loading cached ACS data for ", year)
-    
-    acs_places <- readr::read_csv(paste0(base_filename, "_places.csv"), show_col_types = FALSE)
-    acs_counties <- readr::read_csv(paste0(base_filename, "_counties.csv"), show_col_types = FALSE)
-    acs_townships <- readr::read_csv(paste0(base_filename, "_townships.csv"), show_col_types = FALSE)
-    acs_metros <- st_read(paste0(base_filename, "_metros.gpkg"))
-    
-    return(list("places" = acs_places, 
-                "counties" = acs_counties, 
-                "townships" = acs_townships,
-                "metros" = acs_metros))
+  dir.create("./data/acs", showWarnings = FALSE, recursive = TRUE)
+
+  # Helper to check or update CSV data for a geography
+  check_or_update_csv <- function(geo, geo_name, vars_needed, state = NULL) {
+    csv_file <- paste0(base_filename, "_", geo_name, ".csv")
+    df <- NULL
+    if (file.exists(csv_file)) {
+      message("Reading existing data for ", geo_name)
+      df <- readr::read_csv(
+        csv_file,
+        show_col_types = FALSE,
+        col_types = readr::cols(GEOID = readr::col_character())
+      )
+
+      # Determine which vars are missing (checking both E and M suffixes)
+      present_vars <- gsub("[EM]$", "", grep("E$|M$", colnames(df), value = TRUE))
+      missing_names <- setdiff(names(vars_needed), present_vars)
+
+      if (length(missing_names) == 0) {
+        message("All variables present for ", geo_name)
+        # Return only requested columns plus GEOID and NAME, no save needed
+        expected_cols <- unique(c(
+          "GEOID",
+          grep("^NAME", colnames(df), value = TRUE),  # includes NAME, NAME.x, NAME.y
+          unlist(purrr::imap(vars_needed, function(code, name) {
+            c(paste0(name, "E"), paste0(name, "M"))
+          }))
+        ))
+        # expected_cols <- c("GEOID", "NAME",
+        #                    unlist(purrr::imap(vars_needed, function(code, name) {
+        #                      c(paste0(name, "E"), paste0(name, "M"))
+        #                    })))
+        names(expected_cols) <- NULL
+        df_selected <- df %>% dplyr::select(dplyr::any_of(expected_cols))
+        if ("NAME.x" %in% colnames(df_selected)){
+          df_selected %<>% rename(NAME = NAME.x)
+        } 
+        if ("NAME.y" %in% colnames(df_selected)){
+          df_selected %<>% select(-NAME.y)
+        } 
+        return(df_selected)
+      } else {
+        message("Downloading missing variables for ", geo_name, ": ", paste(missing_names, collapse = ", "))
+        missing_vars_codes <- vars_needed[missing_names]
+
+        acs_new <- get_acs(
+          geography = geo,
+          variables = missing_vars_codes,
+          year = as.numeric(year),
+          survey = "acs5",
+          output = "wide",
+          geometry = FALSE,
+          state = state
+        )
+
+        # Join new data to existing
+        df <- dplyr::left_join(
+          df,
+          acs_new %>% dplyr::select(GEOID, dplyr::any_of(colnames(acs_new))),
+          by = "GEOID"
+        )
+        
+        if ("NAME.x" %in% colnames(df_selected)){
+          df %<>% rename(NAME = NAME.x)
+        } 
+        if ("NAME.y" %in% colnames(df_selected)){
+          df %<>% select(-NAME.y)
+        } 
+        
+        # Save updated CSV with all columns
+        readr::write_csv(df, csv_file)
+        return(df)
+      }
+    } else {
+      message("Downloading ACS data for ", geo_name)
+      acs <- get_acs(
+        geography = geo,
+        variables = vars_needed,
+        year = as.numeric(year),
+        survey = "acs5",
+        output = "wide",
+        geometry = FALSE,
+        state = state
+      )
+      readr::write_csv(acs, csv_file)
+      return(acs)
+    }
   }
-  
-  message("Downloading ACS data for ", year)
-  
-  #geom <- if (as.numeric(year) >= 2019) TRUE else FALSE
-  # We may not need geoms from here ever - can't get some for older years,
-  # can always get them from tigris, although there's the weird error
-  # with some city/metro geometries when trying to match metro areas to cities.
-  geom <- FALSE  
-  
-  acs_places <- get_acs(
-    geography = "place",
-    variables = vars,
-    year = as.numeric(year),
-    survey = "acs5",
-    output = "wide",
-    geometry = geom
+
+  # Helper to check or update metro spatial data in gpkg
+  check_or_update_metro <- function(year, base_filename, vars_metro) {
+    gpkg_file <- paste0(base_filename, "_metros.gpkg")
+    df <- NULL
+
+    if (file.exists(gpkg_file)) {
+      message("Reading existing metro data for ", year)
+      df <- sf::st_read(gpkg_file, quiet = TRUE)
+
+      # Expected columns for metro vars (with E and M suffixes)
+      expected_cols <- unlist(purrr::imap(vars_metro, function(code, name) {
+        c(paste0(name, "E"), paste0(name, "M"))
+      }))
+
+      # Check which expected metro columns are missing
+      missing_vars <- setdiff(expected_cols, colnames(df))
+
+      if (length(missing_vars) == 0) {
+        message("All metro variables present for ", year)
+        return(df)
+      } else {
+        message("Missing metro vars: ", paste(missing_vars, collapse = ", "), "- redownloading metro data")
+      }
+    } else {
+      message("No existing metro data found for ", year, "- downloading metro data")
+    }
+
+    # Download metro data since missing or file doesn't exist
+    acs_metros <- get_acs(
+      geography = "metropolitan statistical area/micropolitan statistical area",
+      variables = vars_metro,
+      survey = "acs5",
+      year = as.numeric(year),
+      output = "wide",
+      geometry = TRUE
+    ) %>%
+      dplyr::mutate(NAME = gsub(" Metro Area", "", NAME),
+                    NAME = gsub(" Micro Area", "", NAME)) %>%
+      dplyr::select(-dplyr::matches("_M$"))  # optional: remove MOE columns for simplicity
+
+    sf::st_write(acs_metros, gpkg_file, delete_dsn = TRUE)
+
+    return(acs_metros)
+  }
+
+  # Process each geography
+  places <- check_or_update_csv("place", "places", vars)
+  counties <- check_or_update_csv("county", "counties", vars)
+  townships <- check_or_update_csv("county subdivision", "townships", vars, state = "NJ")
+  metros <- check_or_update_metro(year, base_filename, vars_metro)
+
+  list(
+    places = places,
+    counties = counties,
+    townships = townships,
+    metros = metros
   )
-  
-  readr::write_csv(acs_places, paste0(base_filename, "_places.csv"))
-  
-  acs_counties <- get_acs(
-    geography = "county",
-    variables = vars,
-    year = as.numeric(year),
-    survey = "acs5",
-    output = "wide",
-    geometry = geom
-  )
-  
-  readr::write_csv(acs_counties, paste0(base_filename, "_counties.csv"))
-  
-  acs_townships <- get_acs(
-    geography = "county subdivision",
-    state = "NJ",
-    variables = vars,
-    year = as.numeric(year),
-    survey = "acs5",
-    output = "wide",
-    geometry = geom
-  )
-  
-  acs_townships %<>%
-    mutate(GEOID = as.character(GEOID))
-  
-  readr::write_csv(acs_townships, paste0(base_filename, "_townships.csv"))
-  
-  acs_metros <- get_acs(
-    geography = "metropolitan statistical area/micropolitan statistical area",
-    variables = vars_metro,  # total population only, for now
-    survey = "acs5",           # or "acs5"
-    year = as.numeric(year),    # most recent available
-    output = "wide",
-    geometry = TRUE
-  ) %>%
-    mutate(NAME = gsub(pattern = " Metro Area", "", NAME)) %>%
-    mutate(NAME = gsub(pattern = " Micro Area", "", NAME)) %>%
-    select(-metro_popM)
-  
-  st_write(acs_metros, paste0(base_filename, "_metros.gpkg"))
-  
-  list("places" = acs_places, 
-       "counties" = acs_counties, 
-       "townships" = acs_townships,
-       "metros" = acs_metros)
 }
 
 # Get PCIT City Names ####

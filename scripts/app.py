@@ -55,13 +55,14 @@ st.markdown(
 city_df = pd.read_csv('./data/out/dissim.csv')  # must have a column 'City'
 cities = sorted(city_df['City'].dropna().unique().tolist())
 
-default_city = 'Somerville city, Massachusetts'
-default_index = cities.index(default_city) #if default_city in cities else 0  # fallback to 0
+#default_city = 'Somerville city, Massachusetts'
+#default_index = cities.index(default_city) #if default_city in cities else 0  # fallback to 0
 
 city_choice = st.selectbox(
     'Choose a city',
     sorted(cities),
-    index=default_index,
+    index=0,
+    #index=default_index, # for 960
     placeholder='Somerville city, Massachusetts',
 )
 

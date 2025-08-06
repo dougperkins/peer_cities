@@ -64,26 +64,26 @@ read_tigris_file <- function(geog, year, dir = "./data/tigris") {
 }
 
 # TODO fairly sure this is unused now!
-read_tigris_years <- function(years, dir = "./data/tigris") {
-  geogs <- c("places", "townships", "counties")
-  tigris_in <- list()
-  
-  for (geog in geogs) {
-    for (year in years) {
-      layer_data <- read_tigris_file(geog, year, dir)
-      
-      if (!is.null(layer_data)) {
-        if (is.null(tigris_in[[geog]])) {
-          tigris_in[[geog]] <- list()
-        }
-        
-        tigris_in[[geog]][[as.character(year)]] <- layer_data
-      }
-    }
-  }
-  
-  return(tigris_in)
-}
+# read_tigris_years <- function(years, dir = "./data/tigris") {
+#   geogs <- c("places", "townships", "counties")
+#   tigris_in <- list()
+#   
+#   for (geog in geogs) {
+#     for (year in years) {
+#       layer_data <- read_tigris_file(geog, year, dir)
+#       
+#       if (!is.null(layer_data)) {
+#         if (is.null(tigris_in[[geog]])) {
+#           tigris_in[[geog]] <- list()
+#         }
+#         
+#         tigris_in[[geog]][[as.character(year)]] <- layer_data
+#       }
+#     }
+#   }
+#   
+#   return(tigris_in)
+# }
 
 
 

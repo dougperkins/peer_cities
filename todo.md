@@ -38,11 +38,11 @@ This is the ground truth of things to do at a granular level, as opposed to leav
   
   - [ ] flexible cluster methods
     
-    - [x]  baseline flexibility
+    - [x] baseline flexibility
     
-    - [ ] custom index eval function to replace NbClust()
+    - [x] custom index eval function to replace NbClust()
     
-    - [ ] better vote/selection method for best clustering across all indices
+    - [x] better vote/selection method for best clustering across all indices
   
   - [ ] namespace
     
@@ -146,9 +146,9 @@ This is the ground truth of things to do at a granular level, as opposed to leav
   
   - [ ] Get consensus clusters with raw and dimred
 
-- [ ] **Output Peer Lists**
+- [x] **Output Peer Lists**
   
-  - [ ] Get consensus peer lists with raw and dimred 
+  - [x] Get consensus peer lists with raw and dimred 
 
 - [ ] **Display Webpage**
   
@@ -160,7 +160,7 @@ This is the ground truth of things to do at a granular level, as opposed to leav
     
     - [x] 3d
     
-    - [ ] (Adv) Tabs to see different DR 
+    - [x] (Adv) Tabs to see different DR 
     
     - [ ] (Adv) Tabs to see if clustering on low-var PCs, option to try those if needed.
     
@@ -168,7 +168,9 @@ This is the ground truth of things to do at a granular level, as opposed to leav
     
     - [ ] Static clustering animated changing over time points
   
-  - [ ] Peer lists / tables / images
+  - [x] Peer lists / tables
+  
+  - [ ] Peer images
 
 - [ ] **Automating Manual Steps (automate, log, notify as needed)**
   

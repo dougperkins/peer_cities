@@ -23,7 +23,8 @@ p_load(
   rmapshaper, testthat,
   fs, htmltools,
   gifski, webshot,
-  crayon, uwot
+  crayon, uwot,
+  clusterCrit
 )
 
 # Global settings
@@ -69,12 +70,39 @@ data$raw$acs <- load_acs_data_by_year(
 data <- data %>% restructure_metros_list()
 
 # City names from ACS -> PCIT format
-data$raw$pre_pcit <- get_pcit_names(data$raw$acs)
+# data$raw$pre_pcit <- get_pcit_names(data$raw$acs)
 
 # Filter down to the 960 PCIT cities
-data$pcit$all_geogs <- get_pcit_cities_df(places_df_list = data$raw$pre_pcit$places,
-                                          counties_df_list = data$raw$pre_pcit$counties,
-                                          townships_df_list = data$raw$pre_pcit$townships)
+# data$pcit$all_geogs <- get_pcit_cities_df(places_df_list = data$raw$pre_pcit$places,
+#                                           counties_df_list = data$raw$pre_pcit$counties,
+#                                           townships_df_list = data$raw$pre_pcit$townships)
+
+# OR: Don't filter down to the 960!
+# these are going to be different sets of 1000 places in each year set - instead need a constant 
+# list from one of them to be used in the others
+
+pcit_city_set <- read_csv(file = "./data/city_sets/pcit_960.csv") %>% rename(NAME = City)
+
+top_pop_cities <- data$raw$acs$`2013`$places %>% arrange(-tot_popE)
+top_pop_cities <- top_pop_cities[1:1920,] %>% select(NAME)
+
+full_city_set <- bind_rows(pcit_city_set, top_pop_cities) %>% distinct()
+
+data$pcit$all_geogs$`2013` <- list(data$raw$acs$`2013`$places %>% filter(NAME %in% full_city_set$NAME),
+                                data$raw$acs$`2013`$counties %>% filter(NAME %in% missing_counties),
+                                data$raw$acs$`2013`$townships %>% filter(NAME %in% missing_townships)) %>% 
+  reduce(bind_rows)
+
+data$pcit$all_geogs$`2018` <- list(data$raw$acs$`2018`$places %>% filter(GEOID %in% data$pcit$all_geogs$`2013`$GEOID),
+                                   data$raw$acs$`2018`$counties %>% filter(NAME %in% missing_counties),
+                                   data$raw$acs$`2018`$townships %>% filter(NAME %in% missing_townships)) %>% 
+  reduce(bind_rows)
+
+data$pcit$all_geogs$`2023` <- list(data$raw$acs$`2023`$places %>% filter(GEOID %in% data$pcit$all_geogs$`2013`$GEOID),
+                                   data$raw$acs$`2023`$counties %>% filter(NAME %in% missing_counties),
+                                   data$raw$acs$`2023`$townships %>% filter(NAME %in% missing_townships)) %>% 
+  reduce(bind_rows)
+
 
 # Get only the variable estimates; drop all margin of error columns
 data$pcit$all_geogs <- map(data$pcit$all_geogs, ~ get_acs_estimates(.x))
@@ -108,10 +136,39 @@ data <- join_areas_to_data(data)
 data <- make_spatial(data)
 data$pcit$all_geogs <- get_metro_pops_parallel(data$pcit$all_geogs, data$raw$acs_metros)
 
+write_csv(data$pcit$all_geogs$`2023`, "./data/incomplete/partial_1957_all_geogs_2023.csv")
+
 ## Static ACS Vars ####
 data$pcit$all_geogs <- derive_acs_static_all_years(data$pcit$all_geogs) %>%
   drop_geometry()
- 
+
+## Drop cities & features with NAs ####
+# Cities if any of the core six variables are NA, cols if they have any NAs
+# Otherwise they will break the dimension reduction
+# Only needed to be introduced when trying non-960 cities
+# Only for the core columns currently being used in the tool
+data$pcit$all_geogs$`2013` %<>% filter(if_all(c(pct_rent_gt30, 
+                                                pct_metro_area_pop, 
+                                                median_home_valueE, 
+                                                homeownership_rate, 
+                                                home_value_to_income), ~ !is.na(.))) %>%
+  select(where(~ !anyNA(.)))
+
+data$pcit$all_geogs$`2018` %<>% filter(if_all(c(pct_rent_gt30, 
+                                                pct_metro_area_pop, 
+                                                median_home_valueE, 
+                                                homeownership_rate, 
+                                                home_value_to_income), ~ !is.na(.))) %>%
+  select(where(~ !anyNA(.)))
+
+data$pcit$all_geogs$`2023` %<>% filter(if_all(c(pct_rent_gt30, 
+                                                pct_metro_area_pop, 
+                                                median_home_valueE, 
+                                                homeownership_rate, 
+                                                home_value_to_income), ~ !is.na(.))) %>%
+  select(where(~ !anyNA(.)))
+
+# Use subset of features
 data$pcit$all_geogs_six_vars <- use_features(data$pcit$all_geogs, feats$housing$somerstat_2)
 
 # Tag each dataset's columns with year
@@ -123,6 +180,13 @@ data$pcit$all_geogs_six_vars %<>% add_col_year_suffixes(years)
 #data$pcit$all_years <- combine_year_dfs(data$pcit$all_geogs)
 data$pcit$all_years_six_vars <- combine_year_dfs(data$pcit$all_geogs_six_vars)
 
+# Drop rows with NAs again
+# (Some cities are in each year but missing data for some years)
+# Only introduced post-960 cities
+data$pcit$all_years_six_vars %<>% 
+  select(-NAME, -NAME.y) %>% 
+  rename(NAME = NAME.x) %>%
+  filter(if_all(everything(), ~ !is.na(.)))
 
 # Get difference variables (ie 2023 - 2018)
 #data$pcit$all_years <- derive_acs_temporal_all(data$pcit$all_years)
@@ -139,7 +203,8 @@ names(data$pcit$all_years)[sapply(data$pcit$all_years_six_vars, function(x) is.n
 city_names <- data$pcit$all_years_six_vars$NAME
 
 # Drop the 2013 and 2018 city names, keep 2023 (some towns became cities)
-data$pcit$all_years_six_vars %<>% select(-NAME.x, -NAME.y)
+# Comment out if using 960
+# data$pcit$all_years_six_vars %<>% select(-NAME.x, -NAME.y)
 
 # Scale the data
 #data$pcit$scaled <- data$pcit$all_years %>% select(where(is.numeric)) %>% scale()
@@ -148,8 +213,6 @@ data$pcit$scaled_six_vars <- data$pcit$all_years_six_vars %>% select(where(is.nu
 data$preprocessed <- list()
 
 data$preprocessed$six_vars <- data$pcit$scaled_six_vars
-
-
 
 # ========================================================================= #
 # FEAT SEL. ======= ####
@@ -232,7 +295,6 @@ clust <- get_k(c("kmeans", "hc", "hdbscan", "gmm"),
               distance = "euclidean")
 
 
-
 ## Cluster ####
 clust <- cluster(data_reduced = data$reduced, 
                  clust = clust, 
@@ -272,20 +334,63 @@ clusterings <- build_clusterings(clust)
 evals <- list()
 
 # Cohesion: measures within-cluster compactness
-evals$compact_sep_ratios <- c("ch", "wb.ratio", "dunn", "dunn2", "sindex")
-evals$silhouette <- c("avg.silwidth", "min.clus.silwidth", "clus.avg.silwidths")
-evals$dist_correlation <- c("pearsongamma", "g2", "g3")
-evals$info_theory <- c("entropy")
-evals$within_ss <- c("within.cluster.ss")
+# evals$compact_sep_ratios <- c("ch", "wb.ratio", "dunn", "dunn2", "sindex")
+# evals$silhouette <- c("avg.silwidth", "min.clus.silwidth", "clus.avg.silwidths")
+# evals$dist_correlation <- c("pearsongamma", "g2", "g3")
+# evals$info_theory <- c("entropy")
+# evals$within_ss <- c("within.cluster.ss")
+# 
+# evals$all <- unname(unlist(evals[c("compact_sep_ratios", "silhouette", "dist_correlation", "info_theory", "within_ss")]))
+# 
+# # data$reduced$pca$six_vars %<>% select(where(is.numeric))
+# # data$reduced$kpca_rbf$six_vars %<>% select(where(is.numeric))
+# # data$reduced$kpca_poly$six_vars %<>% select(where(is.numeric))
+# 
+# p_load(fpc)
+# clust$best <- compare_clusterings(data$reduced, clusterings, evals$all)
 
-evals$all <- unname(unlist(evals[c("compact_sep_ratios", "silhouette", "dist_correlation", "info_theory", "within_ss")]))
+# Removed due to NaNs in GMM (Scott Symons, s_dbw) and hclust (Scott Symons)
+# Removed due to NaN in kpca poly kmeans: log det ratio (from doing log of negative)
+# also: br (-Inf), sil (NaN)
+# Removed due to -Infs in kpca_rbf: gamma
+# Removed because I don't want to overweight Dunn: GDI-everything. 
+# Removed because of error: sep
+# Removed because of NA: g2, g3
+# Slow (per clusterCrit): 
+# Maybe I can set the -infs to -99999 and call it a day? But then the scaling is off? Or not because itll be 0
+# Maybe I set them to min-1?
+# Why do none of GDI21, 31, 32 match Dunn2?
+# What is the "sil" from clusterCrit?
 
-# data$reduced$pca$six_vars %<>% select(where(is.numeric))
-# data$reduced$kpca_rbf$six_vars %<>% select(where(is.numeric))
-# data$reduced$kpca_poly$six_vars %<>% select(where(is.numeric))
+indices$newcomp <- c("avg_sil", "min_avg_sil", "sil", "s_index", # silhouette-related
+                     "ch", "dunn", "dunn2",  "ball_hall", "br", "wcss", 
+                     "entropy", "c", "db", "det_ratio", "gamma", "gplus", "ksq_detw",
+                     "log_det_ratio", "log_ss_ratio", "mcr", "pbm", "ptbi",
+                     "rt", "rl", "sd_scat", "sd_dis", 
+                     "tau", "trace_w", "trace_wib", "wb_ratio", "wg", "xb")
 
-p_load(fpc)
-clust$best <- compare_clusterings(data$reduced, clusterings, evals$all)
+# results <- evaluate_clusterings(data$reduced$pca$six_vars, clusterings$pca, indices$newcomp)
+# normed <- normalize_eval_df(results)
+# judge <- normed %>%
+#   rowwise() %>%
+#   mutate(sum = sum(c_across(everything()), na.rm = TRUE)) %>%
+#   mutate(avg = mean(c_across(everything()), na.rm = TRUE)) %>%
+#   mutate(median = median(c_across(everything()), na.rm = TRUE)) %>%
+#   ungroup() %>%
+#   mutate(clustering = rownames(results)) %>%
+#   select(clustering, sum, avg, median)
+
+#detach("package:fpc", unload = TRUE, character.only = TRUE)
+detach("package:mclust", unload = TRUE, character.only = TRUE)
+eval_results <- evaluate_all_clusterings(data$reduced, clusterings, indices$newcomp)
+eval_normalized <- normalize_all_eval_results(eval_results)
+eval_aggregates <- aggregate_normalized_eval_indices(eval_normalized)
+clust$best <- get_best_clusterings(eval_aggregates, clusterings, use = "median")
+
+# eval_pca <- prcomp(normed, scale. = FALSE)
+# pca$rotation[, 1]
+# fviz_eig(pca)
+# fviz_pca_biplot(pca)
 
 # clust$best$pca <- compare_clusterings_majority_vote(data$reduced$pca$six_vars,
 #                                                      clusterings$pca,
@@ -338,8 +443,6 @@ data$reduced$kpca_rbf$six_vars['cluster'] <- as.character(clust$best$kpca_rbf$as
 #                  highlight_value = "highlight",
 #                  gif_dir = "./gifs/kpca")
 
-
-
 ## kPCA-Poly-Space ####
 data$reduced$kpca_poly$six_vars['cluster'] <- as.character(clust$best$kpca_poly$assn)
 data$reduced$kpca_poly$six_vars %<>% add_highlight(city_choice = city_choice)
@@ -385,7 +488,9 @@ data$reduced$umap$six_vars['cluster'] <- as.character(clust$best$umap$assn)
 my_city <- list()
 peers <- list()
 
-peers <- get_peers(data = data, chosen_city = "Jersey City city, New Jersey")
+peers <- get_peers(data = data, chosen_city = "Somerville city, Massachusetts")
+#peers <- get_peers(data = data, chosen_city = "Jersey City city, New Jersey")
+#peers <- get_peers(data = data, chosen_city = "Bartlett city, Texas")
 
 ## PCA-Space ####
 # my_city$row$pca <- data$reduced$pca$six_vars %>% filter(City == city_choice)
@@ -424,8 +529,8 @@ peers <- get_peers(data = data, chosen_city = "Jersey City city, New Jersey")
 
 top_n <- find_shared_peers(10, c("pca", "kpca_rbf", "kpca_poly", "umap"), peers)
 
-detach("package:fpc", unload = TRUE, character.only = TRUE)
-detach("package:mclust", unload = TRUE, character.only = TRUE)
+#detach("package:fpc", unload = TRUE, character.only = TRUE)
+#detach("package:mclust", unload = TRUE, character.only = TRUE)
 
 dissimilarities <- combine_similarity_rankings(peers, 
                             method_names = c("pca", "kpca_rbf", "kpca_poly", "umap"), 

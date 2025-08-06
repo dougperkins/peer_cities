@@ -61,6 +61,7 @@ Bolded things are more immediate goals.
     - 1970 Census
       
       - Nat. Historical GIS of Minnesota Population Center @ U of Minnesota, for calculating change in labor share of manufacturing 1970-2022.
+    - Strategy / Policy Data
   
   - Global
     

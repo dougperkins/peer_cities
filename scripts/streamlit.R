@@ -56,13 +56,14 @@ st.markdown(
 city_df = pd.read_csv('./data/out/dissim.csv')  # must have a column 'City'
 cities = sorted(city_df['City'].dropna().unique().tolist())
 
-default_city = 'Somerville city, Massachusetts'
-default_index = cities.index(default_city) #if default_city in cities else 0  # fallback to 0
+#default_city = 'Somerville city, Massachusetts'
+#default_index = cities.index(default_city) #if default_city in cities else 0  # fallback to 0
 
 city_choice = st.selectbox(
     'Choose a city',
     sorted(cities),
-    index=default_index,
+    index=0,
+    #index=default_index, # for 960
     placeholder='Somerville city, Massachusetts',
 )
 
@@ -169,93 +170,93 @@ st.write('by Douglas Perkins')
 ", "./scripts/app.py")
 
 #### Page 1: Basic ####
-writeLines("
-import streamlit as st
-import pandas as pd
+# writeLines("
+# import streamlit as st
+# import pandas as pd
+# 
+# st.title('Temporal Housing Peer Cities')
+# 
+# 
+# 
+# ", "./scripts/pages/01_Peers.py")
 
-st.title('Temporal Housing Peer Cities')
-
-
-
-", "./scripts/pages/01_Peers.py")
-
-#### Page 2: Advanced ####
-
-writeLines("
-import streamlit as st
-import pandas as pd
-
-st.title('Temporal Housing Peer Cities')
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.subheader('KMeans PCA')
-    with open('./html/pca_best_3d.html', 'r', encoding='utf-8') as f:
-        html1 = f.read()
-    st.components.v1.html(html1, height=600, scrolling=True)
-
-with col2:
-    st.subheader('Kernel PCA')
-    with open('./html/kpca_best_3d.html', 'r', encoding='utf-8') as f:
-        html2 = f.read()
-    st.components.v1.html(html2, height=600, scrolling=True)
-
-st.image('./gifs/pca/3d_spin_z.gif')
-
-tables = {
-    'PCA': pd.read_csv('./data/out/peers_pca.csv'),
-    'kPCA (RBF)': pd.read_csv('./data/out/peers_kpca_rbf.csv'),
-    'kPCA (Poly)': pd.read_csv('./data/out/peers_kpca_poly.csv')
-}
-
-tab_list = st.tabs(list(tables.keys()))
-
-for i, key in enumerate(tables.keys()):
-    with tab_list[i]:
-        st.subheader(key)
-        st.dataframe(tables[key])
-
-", "./scripts/pages/02_Advanced.py")
-
-#### Page 3: About ####
+#### Page 1: Advanced ####
 
 writeLines("
 import streamlit as st
 import pandas as pd
 
-st.title('Temporal Housing Peer Cities')
+st.title('Advanced')
 
-col1, col2 = st.columns(2)
+# col1, col2 = st.columns(2)
+# 
+# with col1:
+#     st.subheader('KMeans PCA')
+#     with open('./html/pca_best_3d.html', 'r', encoding='utf-8') as f:
+#         html1 = f.read()
+#     st.components.v1.html(html1, height=600, scrolling=True)
+# 
+# with col2:
+#     st.subheader('Kernel PCA')
+#     with open('./html/kpca_best_3d.html', 'r', encoding='utf-8') as f:
+#         html2 = f.read()
+#     st.components.v1.html(html2, height=600, scrolling=True)
+# 
+# st.image('./gifs/pca/3d_spin_z.gif')
+# 
+# tables = {
+#     'PCA': pd.read_csv('./data/out/peers_pca.csv'),
+#     'kPCA (RBF)': pd.read_csv('./data/out/peers_kpca_rbf.csv'),
+#     'kPCA (Poly)': pd.read_csv('./data/out/peers_kpca_poly.csv')
+# }
+# 
+# tab_list = st.tabs(list(tables.keys()))
+# 
+# for i, key in enumerate(tables.keys()):
+#     with tab_list[i]:
+#         st.subheader(key)
+#         st.dataframe(tables[key])
 
-with col1:
-    st.subheader('KMeans PCA')
-    with open('./html/pca_best_3d.html', 'r', encoding='utf-8') as f:
-        html1 = f.read()
-    st.components.v1.html(html1, height=600, scrolling=True)
+", "./scripts/pages/01_Advanced.py")
 
-with col2:
-    st.subheader('Kernel PCA')
-    with open('./html/kpca_best_3d.html', 'r', encoding='utf-8') as f:
-        html2 = f.read()
-    st.components.v1.html(html2, height=600, scrolling=True)
+#### Page 2: About ####
 
-st.image('./gifs/pca/3d_spin_z.gif')
+writeLines("
+import streamlit as st
+import pandas as pd
 
-tables = {
-    'PCA': pd.read_csv('./data/out/peers_pca.csv'),
-    'kPCA (RBF)': pd.read_csv('./data/out/peers_kpca_rbf.csv'),
-    'kPCA (Poly)': pd.read_csv('./data/out/peers_kpca_poly.csv')
-}
+st.title('About')
 
-tab_list = st.tabs(list(tables.keys()))
+# col1, col2 = st.columns(2)
+# 
+# with col1:
+#     st.subheader('KMeans PCA')
+#     with open('./html/pca_best_3d.html', 'r', encoding='utf-8') as f:
+#         html1 = f.read()
+#     st.components.v1.html(html1, height=600, scrolling=True)
+# 
+# with col2:
+#     st.subheader('Kernel PCA')
+#     with open('./html/kpca_best_3d.html', 'r', encoding='utf-8') as f:
+#         html2 = f.read()
+#     st.components.v1.html(html2, height=600, scrolling=True)
+# 
+# st.image('./gifs/pca/3d_spin_z.gif')
+# 
+# tables = {
+#     'PCA': pd.read_csv('./data/out/peers_pca.csv'),
+#     'kPCA (RBF)': pd.read_csv('./data/out/peers_kpca_rbf.csv'),
+#     'kPCA (Poly)': pd.read_csv('./data/out/peers_kpca_poly.csv')
+# }
+# 
+# tab_list = st.tabs(list(tables.keys()))
+# 
+# for i, key in enumerate(tables.keys()):
+#     with tab_list[i]:
+#         st.subheader(key)
+#         st.dataframe(tables[key])
 
-for i, key in enumerate(tables.keys()):
-    with tab_list[i]:
-        st.subheader(key)
-        st.dataframe(tables[key])
-
-", "./scripts/pages/03_About.py")
+", "./scripts/pages/02_About.py")
 
 # df = pd.read_csv('./data/out/peers_pca.csv')
 # st.title('PCA Peers Data Table')

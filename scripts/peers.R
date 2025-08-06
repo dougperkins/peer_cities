@@ -22,7 +22,8 @@ get_peers <- function(data, chosen_city = NULL, city_col = "City") {
     # Get peers with dissimilarity
     peers[[method]] <- my_city$cluster_members[[method]] %>%
       add_distance_to_chosen(city_col = city_col, reference_city = chosen_city) %>%
-      select({{ city_col }}, Dissimilarity)
+      select({{ city_col }}, Dissimilarity) # was working?
+      #select(dplyr::all_of(c(city_col, "Dissimilarity")))
   }
   
   return(peers)

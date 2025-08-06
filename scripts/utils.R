@@ -131,23 +131,23 @@ get_pcit_cities_df <- function(places_df_list, counties_df_list, townships_df_li
   )
 }
 
-get_tigris_data <- function(years){
-  # Load tigris data you created with tigris.R
-  data$tigris_in <- read_tigris_years(years)
-  
-  # Prep list of lists of dfs for each year & geog type, for 
-  tigris_in <- set_names(
-    map(years, ~ list(
-      places    = data$tigris_in$places[[.x]],
-      townships = data$tigris_in$townships[[.x]],
-      counties  = data$tigris_in$counties[[.x]],
-      acs       = data$pcit$all_geogs[[.x]]
-    )),
-    years
-  )
-  
-  data$pcit$tigris <- build_all_tigris_pcit(tigris_in)
-}
+# get_tigris_data <- function(years){
+#   # Load tigris data you created with tigris.R
+#   data$tigris_in <- read_tigris_years(years)
+#   
+#   # Prep list of lists of dfs for each year & geog type, for 
+#   tigris_in <- set_names(
+#     map(years, ~ list(
+#       places    = data$tigris_in$places[[.x]],
+#       townships = data$tigris_in$townships[[.x]],
+#       counties  = data$tigris_in$counties[[.x]],
+#       acs       = data$pcit$all_geogs[[.x]]
+#     )),
+#     years
+#   )
+#   
+#   data$pcit$tigris <- build_all_tigris_pcit(tigris_in)
+# }
 
 filter_all_geogs_by_geoids <- function(data, shared_geoids) {
   data$pcit$all_geogs <- purrr::map(data$pcit$all_geogs, ~ dplyr::filter(.x, GEOID %in% shared_geoids))
