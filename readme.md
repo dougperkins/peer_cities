@@ -1,4 +1,8 @@
+<p align="center"><img width="256" height="256" alt="pcdt_logo_1_25pct_size" src="https://github.com/user-attachments/assets/9354b365-f160-4967-8a08-30b86b4e5ff4" />
+</p>
+
 # Temporal Peer Cities
+
 
 ## Description
 
